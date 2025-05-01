@@ -1,1156 +1,3791 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Life Link - Healthcare App</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Favicon for most browsers -->
-<link rel="icon" type="image/x-icon" href="LifeLinkLogo.png">
-
-<!-- Additional sizes for different devices -->
-<link rel="icon" type="image/png" sizes="32x32" href="LifeLinkLogo.png">
-<link rel="icon" type="image/png" sizes="16x16" href="LifeLinkLogo.png">
-
-<!-- For Apple devices -->
-<link rel="apple-touch-icon" sizes="180x180" href="LifeLinkLogo.png">
-
-<!-- For Windows Metro -->
-<meta name="msapplication-TileColor" content="#1a73e8">
-<meta name="msapplication-TileImage" content="mstile-144x144.png">
-
-<!-- Theme color for some browsers -->
-<meta name="theme-color" content="#1a73e8">
-    <style>
-        :root {
-            --primary: #1a73e8;
-            --secondary: #34a853;
-            --accent: #fbbc05;
-            --emergency: #ea4335;
-            --dark: #202124;
-            --light: #f8f9fa;
-            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
-        }
-
-        #app-container {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* App Header */
-        .app-header {
-            background: white;
-            padding: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            z-index: 10;
-        }
-
-        .app-title {
-            display: flex;
-            align-items: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-
-        .app-title i {
-            margin-right: 10px;
-            color: var(--secondary);
-        }
-
-        .app-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .app-actions button {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--dark);
-            cursor: pointer;
-        }
-
-        /* Main Content */
-        .app-content {
-            flex: 1;
-            overflow-y: auto;
-            padding-bottom: 70px;
-        }
-
-        /* Bottom Navigation */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #666;
-            font-size: 0.8rem;
-            transition: var(--transition);
-        }
-
-        .nav-item i {
-            font-size: 1.4rem;
-            margin-bottom: 5px;
-        }
-
-        .nav-item.active {
-            color: var(--primary);
-        }
-
-        /* Emergency Button */
-        .emergency-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: var(--emergency);
-            color: white;
-            border: none;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 15px rgba(234, 67, 53, 0.3);
-            z-index: 90;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 67, 53, 0.4); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(234, 67, 53, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 67, 53, 0); }
-        }
-
-        /* Dashboard */
-        .dashboard {
-            padding: 15px;
-        }
-
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .welcome-banner h2 {
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .welcome-banner p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 2;
-        }
-
-        .welcome-banner::after {
-            content: '';
-            position: absolute;
-            top: -20px;
-            right: -20px;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-
-        .quick-actions {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .action-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .action-card i {
-            font-size: 1.8rem;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .action-card h3 {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
-
-        .action-card p {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Health Stats */
-        .health-stats {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .stats-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .stats-header h3 {
-            font-size: 1rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            color: #666;
-        }
-
-        /* Recent Activity */
-        .recent-activity {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .activity-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .activity-header h3 {
-            font-size: 1rem;
-        }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .activity-item:last-child {
-            border-bottom: none;
-        }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(26, 115, 232, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-            color: var(--primary);
-        }
-
-        .activity-details h4 {
-            font-size: 0.9rem;
-            margin-bottom: 3px;
-        }
-
-        .activity-details p {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .activity-time {
-            font-size: 0.7rem;
-            color: #999;
-            margin-left: auto;
-        }
-
-        /* Sections */
-        .section {
-            padding: 15px;
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Telemedicine */
-        .doctor-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-        }
-
-        .doctor-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #eee;
-            margin-right: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            color: var(--primary);
-        }
-
-        .doctor-info h3 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .doctor-info p {
-            font-size: 0.8rem;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .doctor-rating {
-            color: var(--accent);
-            font-size: 0.8rem;
-        }
-
-        .doctor-action {
-            margin-left: auto;
-        }
-
-        .consult-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        /* Emergency */
-        .emergency-screen {
-            text-align: center;
-            padding: 30px 15px;
-        }
-
-        .emergency-screen h2 {
-            color: var(--emergency);
-            margin-bottom: 20px;
-        }
-
-        .hold-to-call {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: var(--emergency);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 30px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            box-shadow: 0 0 0 10px rgba(234, 67, 53, 0.2);
-        }
-
-        .emergency-contacts {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-        }
-
-        /* Medication */
-        .medication-list {
-            margin-bottom: 15px;
-        }
-
-        .medication-item {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .medication-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(52, 168, 83, 0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 15px;
-            color: var(--secondary);
-        }
-
-        .medication-details h3 {
-            font-size: 1rem;
-            margin-bottom: 5px;
-        }
-
-        .medication-details p {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .medication-time {
-            margin-left: auto;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .medication-status {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid #ddd;
-            margin-left: 15px;
-            cursor: pointer;
-        }
-
-        .medication-status.taken {
-            background: var(--secondary);
-            border-color: var(--secondary);
-            position: relative;
-        }
-
-        .medication-status.taken::after {
-            content: '\f00c';
-            font-family: 'Font Awesome 6 Free';
-            font-weight: 900;
-            color: white;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.7rem;
-        }
-
-        /* Nutrition */
-        .nutrition-card {
-            background: white;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-        }
-
-        .nutrition-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .nutrition-progress {
-            height: 10px;
-            background: #eee;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-
-        .nutrition-progress-bar {
-            height: 100%;
-            background: var(--secondary);
-            width: 65%;
-        }
-
-        .nutrition-macros {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            text-align: center;
-        }
-
-        .macro-value {
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .macro-label {
-            font-size: 0.7rem;
-            color: #666;
-        }
-
-        /* Modal */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .modal-header h3 {
-            font-size: 1.2rem;
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .modal-body {
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1rem;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 5px;
-            border: none;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #0d5bba;
-        }
-
-        .btn-secondary {
-            background: #eee;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #ddd;
-        }
-
-        /* Responsive */
-        @media (min-width: 768px) {
-            #app-container {
-                max-width: 450px;
-                margin: 0 auto;
-                border: 1px solid #eee;
-                height: 95vh;
-                margin-top: 2.5vh;
-                border-radius: 15px;
-                overflow: hidden;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Life Link - Healthcare App Prototype</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --secondary: #34a853;
+      --accent: #fbbc05;
+      --emergency: #ea4335;
+      --bg-light: #f5f7fa;
+      --card-bg: #fff;
+      --transition: all 0.3s ease;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+    body { background:var(--bg-light); color:#333; min-height:100vh; display:flex; flex-direction:column; }
+    #app-container { flex:1; display:flex; flex-direction:column; }
+
+    /* Header */
+    .app-header { background:var(--primary); color:#fff; padding:20px; display:flex; justify-content:space-between; align-items:center; }
+    .app-title { display:flex; align-items:center; font-size:1.4rem; }
+    .app-title i { margin-right:10px; font-size:1.5rem; }
+    .welcome-msg { font-size:1rem; }
+
+    /* Main Content */
+    .app-content { flex:1; overflow-y:auto; padding:15px; position:relative; padding-bottom:80px; }
+    .section { display:none; }
+    .section.active { display:block; }
+
+    /* Dashboard Cards */
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:15px; margin-bottom:20px; }
+    .card { background:var(--card-bg); border-radius:12px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05); text-align:center; cursor:pointer; transition:var(--transition); }
+    .card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+    .card-icon { font-size:1.8rem; color:var(--primary); margin-bottom:10px; }
+    .card-title { font-size:1rem; font-weight:600; margin-bottom:5px; }
+    .card-desc { font-size:0.8rem; color:#666; }
+
+    /* Section Titles */
+    .section-header { font-size:1.2rem; font-weight:600; margin-bottom:15px; }
+
+    /* Find a Doctor */
+    .search-filter { display:flex; gap:10px; margin-bottom:10px; }
+    .search-filter input { flex:1; padding:10px 14px; border:1px solid #ccc; border-radius:8px; }
+    .search-filter button { background:none; border:none; font-size:1.1rem; color:#555; cursor:pointer; }
+    .results-count { font-size:0.9rem; color:#555; margin-bottom:15px; }
+    .doctor-list { display:grid; gap:15px; }
+    .doctor-card { background:var(--card-bg); border-radius:12px; padding:16px; box-shadow:0 4px 12px rgba(0,0,0,0.05); display:flex; flex-direction:column; gap:12px; transition:var(--transition); }
+    .doctor-card:hover { transform:translateY(-3px); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+    .doctor-details { display:flex; align-items:center; gap:12px; }
+    .doctor-avatar { width:52px; height:52px; border-radius:50%; flex-shrink:0; }
+    .doctor-info { flex:1; display:flex; flex-direction:column; }
+    .doctor-name { font-size:1rem; font-weight:600; margin-bottom:4px; }
+    .doctor-specialty { font-size:0.85rem; color:#777; }
+    .doctor-rating { display:flex; align-items:center; font-size:0.9rem; color:gold; gap:4px; }
+    .doctor-meta { display:flex; gap:10px; flex-wrap:wrap; font-size:0.85rem; }
+    .availability, .fee { background:var(--bg-light); padding:6px 10px; border-radius:8px; }
+    .availability { color:var(--secondary); }
+    .fee { color:var(--primary); }
+    .book-btn { margin-top:8px; background:var(--primary); color:#fff; border:none; padding:12px; border-radius:8px; font-size:0.95rem; font-weight:600; display:flex; justify-content:center; align-items:center; gap:6px; cursor:pointer; }
+    .book-btn i { font-size:0.9rem; }
+
+    /* Modal for Booking */
+    .modal { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; padding:20px; z-index:1000; }
+    .modal.active { display:flex; }
+    .modal-content { background:var(--card-bg); border-radius:12px; width:100%; max-width:380px; max-height:90%; overflow-y:auto; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.1); }
+
+    /* Emergency Section */
+    #emergency { padding-bottom:100px; }
+    .emergency-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:15px; margin-bottom:20px; }
+    .emergency-card { background:var(--card-bg); border-radius:12px; padding:15px; box-shadow:0 4px 12px rgba(0,0,0,0.05); text-align:center; cursor:pointer; transition:var(--transition); position:relative; }
+    .emergency-card:hover { transform:translateY(-5px); box-shadow:0 8px 20px rgba(0,0,0,0.1); }
+    .emergency-card.red { background:#ffebee; border:1px solid #ef9a9a; }
+    .emergency-card.orange { background:#fff3e0; border:1px solid #ffcc80; }
+    .emergency-card.green { background:#e8f5e9; border:1px solid #a5d6a7; }
+    .emergency-card.blue { background:#e3f2fd; border:1px solid #90caf9; }
+    .emergency-icon { font-size:2rem; margin-bottom:10px; }
+    .emergency-card.red .emergency-icon { color:var(--emergency); }
+    .emergency-card.orange .emergency-icon { color:#fb8c00; }
+    .emergency-card.green .emergency-icon { color:var(--secondary); }
+    .emergency-card.blue .emergency-icon { color:var(--primary); }
+    .emergency-title { font-size:1rem; font-weight:600; margin-bottom:5px; }
+    .emergency-desc { font-size:0.8rem; color:#666; }
+    
+    /* First Aid Instructions */
+    .first-aid-container { margin-top:20px; }
+    .first-aid-item { background:var(--card-bg); border-radius:12px; padding:16px; margin-bottom:15px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+    .first-aid-header { display:flex; align-items:center; margin-bottom:12px; cursor:pointer; }
+    .first-aid-icon { font-size:1.5rem; margin-right:12px; color:var(--emergency); }
+    .first-aid-title { font-weight:600; flex:1; }
+    .first-aid-toggle { font-size:1.2rem; transition:var(--transition); }
+    .first-aid-content { display:none; padding-top:10px; }
+    .first-aid-content.active { display:block; }
+    .first-aid-step { display:flex; margin-bottom:10px; }
+    .step-number { background:var(--emergency); color:white; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; margin-right:10px; flex-shrink:0; }
+    .step-text { font-size:0.9rem; }
+    
+    /* Ambulance Tracking */
+    .ambulance-tracking { background:var(--card-bg); border-radius:12px; padding:16px; margin-top:20px; display:none; }
+    .ambulance-tracking.active { display:block; }
+    .tracking-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+    .tracking-title { font-weight:600; }
+    .tracking-eta { color:var(--emergency); font-weight:600; }
+    .tracking-map { height:180px; background:#e0e0e0; border-radius:8px; margin-bottom:15px; position:relative; overflow:hidden; }
+    .tracking-progress { height:6px; background:#e0e0e0; border-radius:3px; margin-bottom:15px; position:relative; }
+    .progress-fill { position:absolute; left:0; top:0; height:100%; background:var(--emergency); border-radius:3px; width:30%; }
+    .tracking-details { display:flex; justify-content:space-between; font-size:0.85rem; }
+    .tracking-cancel { display:block; width:100%; background:#ffebee; color:var(--emergency); border:none; padding:12px; border-radius:8px; font-weight:600; margin-top:15px; text-align:center; }
+    
+    /* Car Crash Detection */
+    .crash-detection { background:var(--card-bg); border-radius:12px; padding:16px; margin-top:20px; text-align:center; }
+    .crash-icon { font-size:3rem; color:var(--emergency); margin-bottom:15px; }
+    .crash-title { font-size:1.2rem; font-weight:600; margin-bottom:10px; }
+    .crash-desc { font-size:0.9rem; color:#666; margin-bottom:20px; }
+    .crash-btn { background:var(--emergency); color:white; border:none; padding:12px 24px; border-radius:30px; font-weight:600; font-size:1rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; }
+    
+    /* SOS Button */
+    .sos-button { position:fixed; bottom:90px; right:20px; width:60px; height:60px; border-radius:50%; background:var(--emergency); color:white; display:flex; justify-content:center; align-items:center; font-size:1.5rem; box-shadow:0 4px 20px rgba(234,67,53,0.5); z-index:100; cursor:pointer; transition:all 0.2s ease; border:none; }
+    .sos-button:hover { transform:scale(1.1); box-shadow:0 6px 25px rgba(234,67,53,0.7); }
+    .sos-button.pulse { animation:pulse 1.5s infinite; }
+    @keyframes pulse {
+      0% { box-shadow:0 0 0 0 rgba(234,67,53,0.7); }
+      70% { box-shadow:0 0 0 15px rgba(234,67,53,0); }
+      100% { box-shadow:0 0 0 0 rgba(234,67,53,0); }
+    }
+    
+    /* Bottom Nav */
+    .bottom-nav { background:#fff; padding:10px 0; display:flex; justify-content:space-around; box-shadow:0 -2px 8px rgba(0,0,0,0.05); position:fixed; bottom:0; left:0; right:0; z-index:99; }
+    .nav-item { display:flex; flex-direction:column; align-items:center; color:#666; font-size:0.75rem; cursor:pointer; transition:var(--transition); }
+    .nav-item.active, .nav-item:hover { color:var(--primary); }
+    .nav-item i { font-size:1.4rem; margin-bottom:4px; }
+
+    /* Modal Headers */
+    .modal-header { display:flex; align-items:center; margin-bottom:15px; }
+    .modal-header .back-btn { background:none; border:none; font-size:1.2rem; cursor:pointer; margin-right:12px; }
+    .modal-header .title { font-size:1.2rem; font-weight:600; }
+
+    /* Booking UI */
+    .doctor-header { text-align:center; margin-bottom:16px; }
+    .doctor-header img { width:80px; height:80px; border-radius:50%; margin-bottom:12px; }
+    .doctor-header .doctor-name { font-size:1.2rem; font-weight:600; }
+    .doctor-spec { font-size:0.85rem; color:#555; margin:4px 0; }
+    .doctor-degrees { font-size:0.75rem; color:#777; margin-bottom:16px; }
+    .stats { display:flex; justify-content:space-between; background:var(--bg-light); padding:12px; border-radius:12px; margin-bottom:16px; }
+    .stats .label { font-size:0.75rem; color:#777; }
+    .stats .value { font-weight:600; margin-top:4px; }
+    .fee-box { background:var(--bg-light); padding:12px; border-radius:12px; text-align:center; margin-bottom:16px; }
+    .fee-label { font-size:0.85rem; color:#777; }
+    .fee-value { font-size:1rem; font-weight:600; margin-top:4px; }
+    .calendar-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+    .nav-btn { background:none; border:none; font-size:1rem; color:var(--primary); cursor:pointer; }
+    .days { display:flex; justify-content:space-between; font-size:0.75rem; color:#777; margin-bottom:8px; }
+    .times { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:8px; }
+    .time-slot { flex:1 1 calc(33% - 8px); text-align:center; padding:8px 0; border-radius:8px; cursor:pointer; }
+    .time-slot.unavailable { background:#f0f0f0; color:#aaa; cursor:default; }
+    .time-slot.available { background:var(--card-bg); border:1px solid var(--primary); color:var(--primary); }
+    .time-slot.selected { background:var(--primary); color:#fff; }
+    .view-all { display:block; text-align:center; background:none; border:none; color:var(--primary); font-size:0.9rem; cursor:pointer; margin-bottom:16px; }
+    .reviews { margin-bottom:16px; }
+    .reviews-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .reviews-header .label { font-size:1rem; font-weight:600; }
+    .reviews-header .rating { display:flex; align-items:center; gap:4px; }
+    .add-review { background:var(--primary); color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.85rem; }
+    .rating-bar { margin-bottom:12px; }
+    .bar-row { display:flex; align-items:center; font-size:0.85rem; margin-bottom:6px; }
+    .bar-row span { width:20px; }
+    .bar { flex:1; height:6px; background:#eee; margin:0 8px; border-radius:3px; overflow:hidden; }
+    .bar-fill { height:100%; background:var(--accent); }
+    .review-item { background:var(--bg-light); padding:12px; border-radius:8px; margin-bottom:8px; }
+    .see-all { display:block; text-align:center; background:none; border:none; color:var(--primary); font-size:0.9rem; cursor:pointer; margin-top:8px; }
+    .book-btn-bottom { width:100%; background:grey; color:#fff; border:none; padding:14px; border-radius:12px; font-size:1rem; font-weight:600; cursor:not-allowed; margin:16px 0; }
+    .book-btn-bottom.enabled { background:var(--primary); cursor:pointer; }
+
+    /* Review & Pay Section */
+    #review-pay { padding-bottom:80px; }
+    .doctor-profile { text-align:center; margin-bottom:20px; }
+    .doctor-profile img { width:80px; height:80px; border-radius:50%; margin-bottom:10px; }
+    .doctor-profile .name { font-size:1.2rem; font-weight:600; }
+    .doctor-profile .specialty { color:#666; font-size:0.9rem; }
+    
+    .info-section { background:var(--card-bg); border-radius:12px; padding:16px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+    .section-title { font-weight:600; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; }
+    .section-title i { color:var(--primary); }
+    
+    .patient-info { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .patient-info img { width:40px; height:40px; border-radius:50%; }
+    .patient-info .name { font-weight:500; }
+    .note { font-size:0.85rem; color:#666; margin-bottom:12px; }
+    .upload-btn { width:100%; padding:12px; background:var(--bg-light); border:1px dashed #ccc; border-radius:8px; text-align:center; color:#666; cursor:pointer; }
+    .upload-btn:hover { background:#eee; }
+    
+    .schedule-item { display:flex; justify-content:space-between; margin-top:8px; }
+    .schedule-item .time { font-weight:500; }
+    .schedule-item .date { color:#666; }
+    
+    .promo-code { display:flex; gap:8px; margin-bottom:16px; }
+    .promo-code input { flex:1; padding:12px; border:1px solid #ddd; border-radius:8px; }
+    .promo-code button { padding:0 16px; background:var(--primary); color:#fff; border:none; border-radius:8px; font-weight:500; cursor:pointer; }
+    
+    .bill-details { margin-top:16px; }
+    .bill-row { display:flex; justify-content:space-between; margin-bottom:8px; }
+    .bill-row.total { font-weight:600; margin-top:12px; padding-top:12px; border-top:1px solid #eee; }
+    
+    .payment-method { display:flex; align-items:center; justify-content:space-between; margin-top:12px; }
+    .card-info { display:flex; align-items:center; gap:8px; }
+    .card-info img { width:30px; height:auto; }
+    .card-number { font-size:0.9rem; }
+    .change-btn { color:var(--primary); font-size:0.9rem; font-weight:500; cursor:pointer; }
+
+    /* Fixed Pay Button */
+    .fixed-pay-btn { position:fixed; bottom:70px; left:0; right:0; background:var(--primary); color:#fff; padding:16px; text-align:center; font-weight:600; cursor:pointer; box-shadow:0 -2px 8px rgba(0,0,0,0.1); }
+
+    /* Payment Confirmation Modal */
+    .payment-confirm-modal {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border-radius: 20px 20px 0 0;
+      padding: 20px;
+      box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
+      z-index: 1001;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    
+    .payment-confirm-modal.active {
+      transform: translateY(0);
+    }
+    
+    .payment-confirm-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      position: sticky;
+      top: 0;
+      background: var(--card-bg);
+      padding-top: 10px;
+      z-index: 1;
+    }
+    
+    .payment-confirm-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .close-payment-confirm {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #666;
+      cursor: pointer;
+    }
+    
+    .payment-method-confirm {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    
+    .bill-details-confirm {
+      margin: 20px 0;
+    }
+    
+    .bill-row-confirm {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .total-confirm {
+      font-weight: 600;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    
+    .currency-note {
+      font-size: 0.8rem;
+      color: #666;
+      margin: 10px 0 20px;
+      line-height: 1.4;
+    }
+    
+    .swipe-to-pay {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 16px;
+      width: 100%;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+    }
+    
+    .swipe-to-pay i {
+      font-size: 1.2rem;
+    }
+    
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: none;
+    }
+    
+    .modal-overlay.active {
+      display: block;
+    }
+
+    /* Emergency Modal */
+    .emergency-modal-content {
+      background: var(--card-bg);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 380px;
+      max-height: 90%;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .emergency-modal-icon {
+      font-size: 3rem;
+      color: var(--emergency);
+      margin-bottom: 15px;
+    }
+    .emergency-modal-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .emergency-modal-text {
+      margin-bottom: 20px;
+      color: #666;
+    }
+    .emergency-modal-btn {
+      background: var(--emergency);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      margin: 5px;
+      width: 100%;
+    }
+    .emergency-modal-btn.secondary {
+      background: #f5f5f5;
+      color: #333;
+    }
+    .emergency-countdown {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--emergency);
+      margin: 20px 0;
+    }
+    .emergency-contacts {
+      text-align: left;
+      margin-top: 20px;
+    }
+    .emergency-contact {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .emergency-contact img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .emergency-contact-name {
+      font-weight: 500;
+    }
+    .emergency-contact-relation {
+      font-size: 0.8rem;
+      color: #666;
+    }
+
+    /* Records Section */
+    #records { padding-bottom: 80px; }
+    
+    .health-summary {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .summary-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .summary-edit {
+      color: var(--primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .summary-item {
+      background: var(--bg-light);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    
+    .summary-label {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    
+    .summary-value {
+      font-weight: 600;
+    }
+    
+    .records-tabs {
+      display: flex;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 16px;
+    }
+    
+    .records-tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      position: relative;
+    }
+    
+    .records-tab.active {
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .records-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+    
+    .records-content {
+      display: none;
+    }
+    
+    .records-content.active {
+      display: block;
+    }
+    
+    .record-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .record-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .record-title {
+      font-weight: 600;
+    }
+    
+    .record-date {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .record-details {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    
+    .record-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .record-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .record-btn.view {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    
+    .record-btn.download {
+      background: var(--bg-light);
+      border: 1px solid #ddd;
+      color: #333;
+    }
+    
+    .record-btn.share {
+      background: var(--secondary);
+      color: white;
+      border: none;
+    }
+    
+    .medication-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .medication-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--bg-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: var(--primary);
+    }
+    
+    .medication-info {
+      flex: 1;
+    }
+    
+    .medication-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .medication-details {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .medication-status {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    .medication-status.active {
+      background: #e8f5e9;
+      color: var(--secondary);
+    }
+    
+    .medication-status.completed {
+      background: #f5f5f5;
+      color: #666;
+    }
+    
+    .vital-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .vital-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    
+    .vital-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .vital-date {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .vital-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .vital-stat {
+      background: var(--bg-light);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    
+    .vital-label {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    
+    .vital-value {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .vital-range {
+      font-size: 0.75rem;
+      color: #666;
+    }
+    
+    .vital-trend {
+      margin-top: 8px;
+      height: 30px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .trend-line {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #ccc;
+    }
+    
+    .trend-data {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+    }
+    
+    .trend-point {
+      flex: 1;
+      background: var(--primary);
+      margin: 0 1px;
+    }
+    
+    .allergy-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .allergy-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ffebee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: var(--emergency);
+    }
+    
+    .allergy-info {
+      flex: 1;
+    }
+    
+    .allergy-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .allergy-severity {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .allergy-status {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: #ffebee;
+      color: var(--emergency);
+    }
+    
+    .document-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .document-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #e3f2fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: var(--primary);
+    }
+    
+    .document-info {
+      flex: 1;
+    }
+    
+    .document-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .document-details {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .document-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .document-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--bg-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .document-btn i {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .add-record-btn {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.3);
+      z-index: 100;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .record-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+    
+    .record-modal.active {
+      display: flex;
+    }
+    
+    .record-modal-content {
+      background: var(--card-bg);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      max-height: 90%;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    
+    .record-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .record-modal-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .record-modal-close {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      color: #666;
+      cursor: pointer;
+    }
+    
+    .record-form-group {
+      margin-bottom: 16px;
+    }
+    
+    .record-form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .record-form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .record-form-select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+    
+    .record-form-textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      min-height: 100px;
+      resize: vertical;
+    }
+    
+    .record-form-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    
+    .record-form-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    
+    .record-form-btn.cancel {
+      background: var(--bg-light);
+      border: 1px solid #ddd;
+      color: #333;
+    }
+    
+    .record-form-btn.submit {
+      background: var(--primary);
+      border: none;
+      color: white;
+    }
+    
+    .image-preview {
+      width: 100%;
+      height: 200px;
+      background: var(--bg-light);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .image-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    
+    .image-preview-placeholder {
+      text-align: center;
+      color: #666;
+    }
+    
+    .image-preview-placeholder i {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    
+    .upload-image-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--bg-light);
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      text-align: center;
+      color: #666;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+    
+    .upload-image-btn:hover {
+      background: #eee;
+    }
+    
+    .image-remove-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Medication Section */
+    #medication { padding-bottom: 80px; }
+    
+    .medication-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .medication-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .add-medication-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .medication-tabs {
+      display: flex;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 16px;
+    }
+    
+    .medication-tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      position: relative;
+    }
+    
+    .medication-tab.active {
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .medication-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+    
+    .medication-content {
+      display: none;
+    }
+    
+    .medication-content.active {
+      display: block;
+    }
+    
+    .medication-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .medication-card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .medication-card-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .medication-card-status {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    .medication-card-status.active {
+      background: #e8f5e9;
+      color: var(--secondary);
+    }
+    
+    .medication-card-details {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+    
+    .medication-card-schedule {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    
+    .schedule-badge {
+      background: var(--bg-light);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .medication-card-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .medication-card-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .medication-card-btn.taken {
+      background: var(--secondary);
+      color: white;
+      border: none;
+    }
+    
+    .medication-card-btn.skipped {
+      background: #ffebee;
+      color: var(--emergency);
+      border: none;
+    }
+    
+    .medication-card-btn.refill {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    
+    .pharmacy-chat {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .pharmacy-chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .pharmacy-chat-title {
+      font-weight: 600;
+    }
+    
+    .pharmacy-chat-start {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    
+    .pharmacy-chat-messages {
+      height: 200px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+      padding: 8px;
+      background: var(--bg-light);
+      border-radius: 8px;
+    }
+    
+    .chat-message {
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      max-width: 80%;
+    }
+    
+    .chat-message.bot {
+      background: white;
+      align-self: flex-start;
+    }
+    
+    .chat-message.user {
+      background: var(--primary);
+      color: white;
+      align-self: flex-end;
+      margin-left: auto;
+    }
+    
+    .pharmacy-chat-input {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .pharmacy-chat-input input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .pharmacy-chat-input button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    
+    .ai-suggestions {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .ai-suggestions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .ai-suggestions-title {
+      font-weight: 600;
+    }
+    
+    .ai-suggestions-refresh {
+      background: var(--bg-light);
+      border: none;
+      padding: 6px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .ai-suggestion-item {
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .ai-suggestion-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .ai-suggestion-details {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .ai-suggestion-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .ai-suggestion-btn {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    
+    .ai-suggestion-btn.primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    
+    .ai-suggestion-btn.secondary {
+      background: var(--bg-light);
+      border: 1px solid #ddd;
+      color: #333;
+    }
+    
+    /* Nutrition Section */
+    #nutrition { padding-bottom: 80px; }
+    
+    .nutrition-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .nutrition-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .add-nutrition-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .nutrition-summary {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .nutrition-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    
+    .nutrition-summary-item {
+      background: var(--bg-light);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    
+    .nutrition-summary-value {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .nutrition-summary-label {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .nutrition-summary-progress {
+      height: 6px;
+      background: #eee;
+      border-radius: 3px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    
+    .nutrition-summary-progress-fill {
+      height: 100%;
+      background: var(--secondary);
+    }
+    
+    .nutrition-tabs {
+      display: flex;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 16px;
+    }
+    
+    .nutrition-tab {
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      position: relative;
+    }
+    
+    .nutrition-tab.active {
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .nutrition-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+    
+    .nutrition-content {
+      display: none;
+    }
+    
+    .nutrition-content.active {
+      display: block;
+    }
+    
+    .meal-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .meal-card-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .meal-card-title {
+      font-weight: 600;
+    }
+    
+    .meal-card-time {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .meal-card-items {
+      margin-top: 8px;
+    }
+    
+    .meal-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .meal-item-name {
+      font-weight: 500;
+    }
+    
+    .meal-item-calories {
+      color: #666;
+    }
+    
+    .meal-card-total {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    
+    .water-tracker {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .water-tracker-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .water-tracker-title {
+      font-weight: 600;
+    }
+    
+    .water-tracker-goal {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .water-tracker-bottles {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    
+    .water-bottle {
+      width: 40px;
+      height: 60px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    
+    .water-bottle.filled {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .bmi-calculator {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .bmi-calculator-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .bmi-calculator-title {
+      font-weight: 600;
+    }
+    
+    .bmi-calculator-form {
+      display: grid;
+      gap: 12px;
+    }
+    
+    .bmi-calculator-result {
+      margin-top: 12px;
+      padding: 12px;
+      background: var(--bg-light);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .bmi-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .bmi-category {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    
+    .bmi-scale {
+      height: 10px;
+      background: linear-gradient(to right, #4CAF50, #8BC34A, #FFEB3B, #FF9800, #F44336);
+      border-radius: 5px;
+      margin-top: 8px;
+      position: relative;
+    }
+    
+    .bmi-marker {
+      position: absolute;
+      top: -5px;
+      width: 2px;
+      height: 20px;
+      background: black;
+    }
+    
+    .device-sync {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .device-sync-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .device-sync-title {
+      font-weight: 600;
+    }
+    
+    .device-sync-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .device-list {
+      margin-top: 12px;
+    }
+    
+    .device-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .device-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--bg-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: var(--primary);
+    }
+    
+    .device-info {
+      flex: 1;
+    }
+    
+    .device-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .device-status {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .device-action {
+      font-size: 0.8rem;
+      color: var(--primary);
+      cursor: pointer;
+    }
+    
+    /* Nearby Section */
+    #nearby { padding-bottom: 80px; }
+    
+    .nearby-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .nearby-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+    
+    .nearby-filter {
+      background: var(--bg-light);
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .nearby-map {
+      height: 200px;
+      background: #e0e0e0;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .map-marker {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--emergency);
+    }
+    
+    .map-marker.hospital {
+      background: var(--emergency);
+      top: 30%;
+      left: 20%;
+    }
+    
+    .map-marker.clinic {
+      background: var(--primary);
+      top: 40%;
+      left: 50%;
+    }
+    
+    .map-marker.pharmacy {
+      background: var(--secondary);
+      top: 60%;
+      left: 70%;
+    }
+    
+    .map-marker.user {
+      background: var(--accent);
+      top: 50%;
+      left: 30%;
+      width: 8px;
+      height: 8px;
+    }
+    
+    .nearby-list {
+      margin-bottom: 16px;
+    }
+    
+    .nearby-item {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .nearby-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .nearby-item-title {
+      font-weight: 600;
+    }
+    
+    .nearby-item-distance {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .nearby-item-type {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+    
+    .nearby-item-type.hospital {
+      background: #ffebee;
+      color: var(--emergency);
+    }
+    
+    .nearby-item-type.clinic {
+      background: #e3f2fd;
+      color: var(--primary);
+    }
+    
+    .nearby-item-type.pharmacy {
+      background: #e8f5e9;
+      color: var(--secondary);
+    }
+    
+    .nearby-item-address {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    
+    .nearby-item-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nearby-item-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.85rem;
+    }
+    
+    .nearby-item-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .nearby-item-btn {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    
+    .nearby-item-btn.directions {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+    
+    .nearby-item-btn.call {
+      background: var(--bg-light);
+      border: 1px solid #ddd;
+      color: #333;
+    }
+    
+    .pharmacy-stock {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .pharmacy-stock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .pharmacy-stock-title {
+      font-weight: 600;
+    }
+    
+    .pharmacy-stock-search {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .pharmacy-stock-search input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+    
+    .pharmacy-stock-search button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    
+    .pharmacy-stock-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .pharmacy-stock-info {
+      flex: 1;
+    }
+    
+    .pharmacy-stock-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .pharmacy-stock-details {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .pharmacy-stock-status {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    
+    .pharmacy-stock-status.available {
+      background: #e8f5e9;
+      color: var(--secondary);
+    }
+    
+    .pharmacy-stock-status.low {
+      background: #fff3e0;
+      color: #ff9800;
+    }
+    
+    .pharmacy-stock-status.unavailable {
+      background: #ffebee;
+      color: var(--emergency);
+    }
+    
+    .emergency-facilities {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .emergency-facilities-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .emergency-facilities-title {
+      font-weight: 600;
+    }
+    
+    .emergency-facilities-list {
+      margin-top: 12px;
+    }
+    
+    .emergency-facility {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .emergency-facility-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: #ffebee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: var(--emergency);
+    }
+    
+    .emergency-facility-info {
+      flex: 1;
+    }
+    
+    .emergency-facility-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    
+    .emergency-facility-distance {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    
+    .emergency-facility-action {
+      font-size: 0.8rem;
+      color: var(--emergency);
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div id="app-container">
-        <!-- App Header -->
-        <header class="app-header">
-            <div class="app-title">
-                <i class="fas fa-heartbeat"></i>
-                <span>Life Link</span>
+  <div id="app-container">
+    <header class="app-header">
+      <div class="app-title"><i class="fas fa-heartbeat"></i>Life Link</div>
+      <div class="welcome-msg">Hey Lynn, stay healthy! 👋</div>
+    </header>
+
+    <main class="app-content">
+      <!-- Dashboard -->
+      <section class="section active" id="dashboard">
+        <div class="section-header">Quick Actions</div>
+        <div class="cards">
+          <div class="card" onclick="showSection('doctors')"><div class="card-icon"><i class="fas fa-user-md"></i></div><div class="card-title">Doctors</div><div class="card-desc">Find & Book</div></div>
+          <div class="card" onclick="showSection('emergency')"><div class="card-icon"><i class="fas fa-ambulance"></i></div><div class="card-title">Emergency</div><div class="card-desc">One-tap SOS</div></div>
+          <div class="card" onclick="showSection('records')"><div class="card-icon"><i class="fas fa-file-medical"></i></div><div class="card-title">Records</div><div class="card-desc">View Reports</div></div>
+          <div class="card" onclick="showSection('medication')"><div class="card-icon"><i class="fas fa-pills"></i></div><div class="card-title">Medication</div><div class="card-desc">Track Doses</div></div>
+          <div class="card" onclick="showSection('nutrition')"><div class="card-icon"><i class="fas fa-apple-alt"></i></div><div class="card-title">Nutrition</div><div class="card-desc">Log Meals</div></div>
+          <div class="card" onclick="showSection('nearby')"><div class="card-icon"><i class="fas fa-map-marker-alt"></i></div><div class="card-title">Nearby</div><div class="card-desc">Services</div></div>
+        </div>
+      </section>
+
+      <!-- Doctors Section -->
+      <section class="section" id="doctors">
+        <div class="section-header">Find a Doctor</div>
+        <div class="search-filter">
+          <input type="text" id="doctor-search" placeholder="Search by doctor's name">
+          <button id="filter-btn"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+        <div class="results-count">116 Doctors found in General Physician</div>
+        <div class="doctor-list">
+          <div class="doctor-card">
+            <div class="doctor-details">
+              <img class="doctor-avatar" src="https://i.pravatar.cc/52?img=12" alt="Dr Arlene Mccoy">
+              <div class="doctor-info">
+                <div class="doctor-name">Dr. Hilal Kanaan</div>
+                <div class="doctor-specialty">cardiologist (5 yrs exp)</div>
+              </div>
+              <div class="doctor-rating"><span>4.8</span><i class="fas fa-star"></i></div>
             </div>
-            <div class="app-actions">
-                <button><i class="fas fa-bell"></i></button>
-                <button><i class="fas fa-search"></i></button>
+            <div class="doctor-meta">
+              <div class="availability">Available Now</div>
+              <div class="fee">$180 Consultation Fee</div>
             </div>
-        </header>
+            <button class="book-btn" onclick="openAppointmentModal()">Book Appointment <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </section>
 
-        <!-- Main Content -->
-        <main class="app-content">
-            <!-- Dashboard Section -->
-            <section class="dashboard section active" id="dashboard">
-                <div class="welcome-banner">
-                    <h2>Hello, Patient!</h2>
-                    <p>How are you feeling today?</p>
+      <!-- Emergency Section -->
+      <section class="section" id="emergency">
+        <div class="section-header">Emergency Services</div>
+        
+        <div class="emergency-cards">
+          <div class="emergency-card red" onclick="triggerAmbulance()">
+            <div class="emergency-icon"><i class="fas fa-ambulance"></i></div>
+            <div class="emergency-title">Call Ambulance</div>
+            <div class="emergency-desc">Immediate medical transport</div>
+          </div>
+          <div class="emergency-card orange" onclick="showFirstAid('choking')">
+            <div class="emergency-icon"><i class="fas fa-lungs"></i></div>
+            <div class="emergency-title">Choking</div>
+            <div class="emergency-desc">First aid instructions</div>
+          </div>
+          <div class="emergency-card green" onclick="showFirstAid('cpr')">
+            <div class="emergency-icon"><i class="fas fa-heartbeat"></i></div>
+            <div class="emergency-title">CPR</div>
+            <div class="emergency-desc">Cardiopulmonary resuscitation</div>
+          </div>
+          <div class="emergency-card blue" onclick="showFirstAid('allergy')">
+            <div class="emergency-icon"><i class="fas fa-allergies"></i></div>
+            <div class="emergency-title">Allergy</div>
+            <div class="emergency-desc">Severe reaction response</div>
+          </div>
+        </div>
+        
+        <!-- First Aid Instructions -->
+        <div class="first-aid-container" id="first-aid-container">
+          <!-- Will be populated by JavaScript -->
+        </div>
+        
+        <!-- Ambulance Tracking -->
+        <div class="ambulance-tracking" id="ambulance-tracking">
+          <div class="tracking-header">
+            <div class="tracking-title">Ambulance En Route</div>
+            <div class="tracking-eta">ETA: 7 min</div>
+          </div>
+          <div class="tracking-map" id="tracking-map">
+            <!-- This would be a map in a real app -->
+            <div style="position:relative; height:100%;">
+              <div style="position:absolute; top:50%; left:20%; width:40px; height:40px; background:var(--emergency); border-radius:50%; display:flex; justify-content:center; align-items:center; color:white;">
+                <i class="fas fa-crosshairs"></i>
+              </div>
+              <div style="position:absolute; top:20%; left:70%; width:40px; height:40px; background:var(--emergency); border-radius:50%; display:flex; justify-content:center; align-items:center; color:white; transform:rotate(45deg);">
+                <i class="fas fa-ambulance"></i>
+              </div>
+              <div style="position:absolute; bottom:10%; left:30%; width:80%; height:4px; background:var(--emergency);"></div>
+              <div style="position:absolute; bottom:10%; left:30%; width:10px; height:10px; background:var(--emergency); border-radius:50%;"></div>
+            </div>
+          </div>
+          <div class="tracking-progress">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <div class="tracking-details">
+            <div>Distance: 2.3 km</div>
+            <div>Vehicle #: AMB-7241</div>
+          </div>
+          <button class="tracking-cancel" onclick="cancelAmbulance()">Cancel Ambulance</button>
+        </div>
+        
+        <!-- Car Crash Detection -->
+        <div class="crash-detection">
+          <div class="crash-icon"><i class="fas fa-car-crash"></i></div>
+          <div class="crash-title">Car Crash Detection</div>
+          <div class="crash-desc">If you've been in an accident, tap below to alert emergency services with your location</div>
+          <button class="crash-btn" onclick="detectCrash()"><i class="fas fa-exclamation-triangle"></i> Simulate Crash</button>
+        </div>
+      </section>
+
+      <!-- Records Section -->
+      <section class="section" id="records">
+        <div class="health-summary">
+          <div class="summary-header">
+            <div class="summary-title">Health Summary</div>
+            <div class="summary-edit" onclick="openEditHealthModal()">Edit</div>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <div class="summary-label">Blood Type</div>
+              <div class="summary-value">A+</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Height</div>
+              <div class="summary-value">175 cm</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Weight</div>
+              <div class="summary-value">68 kg</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">BMI</div>
+              <div class="summary-value">22.2</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Allergies</div>
+              <div class="summary-value">Penicillin</div>
+            </div>
+            <div class="summary-item">
+              <div class="summary-label">Conditions</div>
+              <div class="summary-value">Asthma</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="records-tabs">
+          <div class="records-tab active" onclick="switchRecordsTab('medical')">Medical</div>
+          <div class="records-tab" onclick="switchRecordsTab('vitals')">Vitals</div>
+          <div class="records-tab" onclick="switchRecordsTab('medications')">Medications</div>
+          <div class="records-tab" onclick="switchRecordsTab('documents')">Documents</div>
+        </div>
+        
+        <!-- Medical Records -->
+        <div class="records-content active" id="medical-records">
+          <div class="record-card">
+            <div class="record-header">
+              <div class="record-title">Annual Physical Exam</div>
+              <div class="record-date">15 Jan 2024</div>
+            </div>
+            <div class="record-details">
+              <p>Dr. Smith conducted routine physical examination. All vitals normal. Recommended annual blood work.</p>
+            </div>
+            <div class="record-actions">
+              <button class="record-btn view"><i class="fas fa-eye"></i> View</button>
+              <button class="record-btn download"><i class="fas fa-download"></i> Download</button>
+              <button class="record-btn share"><i class="fas fa-share"></i> Share</button>
+            </div>
+          </div>
+          
+          <div class="record-card">
+            <div class="record-header">
+              <div class="record-title">Blood Test Results</div>
+              <div class="record-date">10 Jan 2024</div>
+            </div>
+            <div class="record-details">
+              <p>CBC, Lipid Panel, Glucose. All results within normal range except slightly elevated cholesterol (210 mg/dL).</p>
+            </div>
+            <div class="record-actions">
+              <button class="record-btn view"><i class="fas fa-eye"></i> View</button>
+              <button class="record-btn download"><i class="fas fa-download"></i> Download</button>
+              <button class="record-btn share"><i class="fas fa-share"></i> Share</button>
+            </div>
+          </div>
+          
+          <div class="record-card">
+            <div class="record-header">
+              <div class="record-title">X-Ray Report</div>
+              <div class="record-date">5 Dec 2023</div>
+            </div>
+            <div class="record-details">
+              <p>Chest X-ray shows clear lungs with no signs of infection or abnormalities. Heart size normal.</p>
+            </div>
+            <div class="record-actions">
+              <button class="record-btn view"><i class="fas fa-eye"></i> View</button>
+              <button class="record-btn download"><i class="fas fa-download"></i> Download</button>
+              <button class="record-btn share"><i class="fas fa-share"></i> Share</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Vitals Records -->
+        <div class="records-content" id="vitals-records">
+          <div class="vital-card">
+            <div class="vital-header">
+              <div class="vital-title"><i class="fas fa-heartbeat"></i> Blood Pressure</div>
+              <div class="vital-date">Today, 8:30 AM</div>
+            </div>
+            <div class="vital-stats">
+              <div class="vital-stat">
+                <div class="vital-label">Systolic</div>
+                <div class="vital-value">120</div>
+                <div class="vital-range">Normal: 90-120</div>
+              </div>
+              <div class="vital-stat">
+                <div class="vital-label">Diastolic</div>
+                <div class="vital-value">80</div>
+                <div class="vital-range">Normal: 60-80</div>
+              </div>
+            </div>
+            <div class="vital-trend">
+              <div class="trend-line"></div>
+              <div class="trend-data">
+                <div class="trend-point" style="height: 70%;"></div>
+                <div class="trend-point" style="height: 80%;"></div>
+                <div class="trend-point" style="height: 75%;"></div>
+                <div class="trend-point" style="height: 85%;"></div>
+                <div class="trend-point" style="height: 100%;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="vital-card">
+            <div class="vital-header">
+              <div class="vital-title"><i class="fas fa-temperature-high"></i> Body Temperature</div>
+              <div class="vital-date">Today, 8:30 AM</div>
+            </div>
+            <div class="vital-stats">
+              <div class="vital-stat">
+                <div class="vital-label">Reading</div>
+                <div class="vital-value">98.6°F</div>
+                <div class="vital-range">Normal: 97.8-99.1°F</div>
+              </div>
+              <div class="vital-stat">
+                <div class="vital-label">Method</div>
+                <div class="vital-value">Oral</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="vital-card">
+            <div class="vital-header">
+              <div class="vital-title"><i class="fas fa-weight"></i> Weight</div>
+              <div class="vital-date">Today, 8:00 AM</div>
+            </div>
+            <div class="vital-stats">
+              <div class="vital-stat">
+                <div class="vital-label">Current</div>
+                <div class="vital-value">68 kg</div>
+                <div class="vital-range">Goal: 65 kg</div>
+              </div>
+              <div class="vital-stat">
+                <div class="vital-label">Change</div>
+                <div class="vital-value" style="color: var(--secondary);">-1.2 kg</div>
+                <div class="vital-range">Last month: 69.2 kg</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Medications Records -->
+        <div class="records-content" id="medications-records">
+          <div class="medication-item">
+            <div class="medication-icon">
+              <i class="fas fa-pills"></i>
+            </div>
+            <div class="medication-info">
+              <div class="medication-name">Lisinopril</div>
+              <div class="medication-details">10mg, Once daily for blood pressure</div>
+            </div>
+            <div class="medication-status active">Active</div>
+          </div>
+          
+          <div class="medication-item">
+            <div class="medication-icon">
+              <i class="fas fa-pills"></i>
+            </div>
+            <div class="medication-info">
+              <div class="medication-name">Atorvastatin</div>
+              <div class="medication-details">20mg, Once daily for cholesterol</div>
+            </div>
+            <div class="medication-status active">Active</div>
+          </div>
+          
+          <div class="medication-item">
+            <div class="medication-icon">
+              <i class="fas fa-pills"></i>
+            </div>
+            <div class="medication-info">
+              <div class="medication-name">Amoxicillin</div>
+              <div class="medication-details">500mg, 3 times daily for 10 days</div>
+            </div>
+            <div class="medication-status completed">Completed</div>
+          </div>
+        </div>
+        
+        <!-- Documents Records -->
+        <div class="records-content" id="documents-records">
+          <div class="document-item">
+            <div class="document-icon">
+              <i class="fas fa-file-pdf"></i>
+            </div>
+            <div class="document-info">
+              <div class="document-name">Full Blood Work Report</div>
+              <div class="document-details">PDF • 10 Jan 2024 • 2.4 MB</div>
+            </div>
+            <div class="document-actions">
+              <div class="document-btn"><i class="fas fa-download"></i></div>
+              <div class="document-btn"><i class="fas fa-share"></i></div>
+            </div>
+          </div>
+          
+          <div class="document-item">
+            <div class="document-icon">
+              <i class="fas fa-file-image"></i>
+            </div>
+            <div class="document-info">
+              <div class="document-name">Chest X-Ray Image</div>
+              <div class="document-details">JPG • 5 Dec 2023 • 1.8 MB</div>
+            </div>
+            <div class="document-actions">
+              <div class="document-btn"><i class="fas fa-download"></i></div>
+              <div class="document-btn"><i class="fas fa-share"></i></div>
+            </div>
+          </div>
+          
+          <div class="document-item">
+            <div class="document-icon">
+              <i class="fas fa-file-prescription"></i>
+            </div>
+            <div class="document-info">
+              <div class="document-name">Prescription - Dr. Smith</div>
+              <div class="document-details">PDF • 15 Jan 2024 • 0.5 MB</div>
+            </div>
+            <div class="document-actions">
+              <div class="document-btn"><i class="fas fa-download"></i></div>
+              <div class="document-btn"><i class="fas fa-share"></i></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Medication Section -->
+      <section class="section" id="medication">
+        <div class="medication-header">
+          <div class="medication-title">My Medications</div>
+          <button class="add-medication-btn" onclick="openAddMedicationModal()"><i class="fas fa-plus"></i> Add Medication</button>
+        </div>
+        
+        <div class="medication-tabs">
+          <div class="medication-tab active" onclick="switchMedicationTab('current')">Current</div>
+          <div class="medication-tab" onclick="switchMedicationTab('history')">History</div>
+          <div class="medication-tab" onclick="switchMedicationTab('reminders')">Reminders</div>
+        </div>
+        
+        <div class="medication-content active" id="current-medications">
+          <div class="medication-card">
+            <div class="medication-card-header">
+              <div class="medication-card-title"><i class="fas fa-pills"></i> Lisinopril</div>
+              <div class="medication-card-status active">Active</div>
+            </div>
+            <div class="medication-card-details">
+              <div>10mg tablet • Take 1 daily for blood pressure</div>
+              <div>Prescribed by Dr. Smith on 15 Jan 2024</div>
+            </div>
+            <div class="medication-card-schedule">
+              <div class="schedule-badge"><i class="fas fa-sun"></i> Morning</div>
+              <div class="schedule-badge"><i class="fas fa-calendar"></i> Daily</div>
+              <div class="schedule-badge"><i class="fas fa-box"></i> 15 left</div>
+            </div>
+            <div class="medication-card-actions">
+              <button class="medication-card-btn taken"><i class="fas fa-check"></i> Taken Today</button>
+              <button class="medication-card-btn skipped"><i class="fas fa-times"></i> Skipped</button>
+              <button class="medication-card-btn refill"><i class="fas fa-sync-alt"></i> Refill</button>
+            </div>
+          </div>
+          
+          <div class="medication-card">
+            <div class="medication-card-header">
+              <div class="medication-card-title"><i class="fas fa-pills"></i> Atorvastatin</div>
+              <div class="medication-card-status active">Active</div>
+            </div>
+            <div class="medication-card-details">
+              <div>20mg tablet • Take 1 daily for cholesterol</div>
+              <div>Prescribed by Dr. Smith on 15 Jan 2024</div>
+            </div>
+            <div class="medication-card-schedule">
+              <div class="schedule-badge"><i class="fas fa-moon"></i> Evening</div>
+              <div class="schedule-badge"><i class="fas fa-calendar"></i> Daily</div>
+              <div class="schedule-badge"><i class="fas fa-box"></i> 8 left</div>
+            </div>
+            <div class="medication-card-actions">
+              <button class="medication-card-btn taken"><i class="fas fa-check"></i> Taken Today</button>
+              <button class="medication-card-btn skipped"><i class="fas fa-times"></i> Skipped</button>
+              <button class="medication-card-btn refill"><i class="fas fa-sync-alt"></i> Refill</button>
+            </div>
+          </div>
+          
+          <div class="pharmacy-chat">
+            <div class="pharmacy-chat-header">
+              <div class="pharmacy-chat-title">Pharmacy Chat</div>
+              <button class="pharmacy-chat-start" onclick="startPharmacyChat()"><i class="fas fa-comment-medical"></i> Check Availability</button>
+            </div>
+            <div class="pharmacy-chat-messages" id="pharmacy-chat-messages">
+              <!-- Messages will appear here -->
+            </div>
+            <div class="pharmacy-chat-input" id="pharmacy-chat-input" style="display: none;">
+              <input type="text" placeholder="Type your message...">
+              <button onclick="sendPharmacyMessage()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+          </div>
+          
+          <div class="ai-suggestions">
+            <div class="ai-suggestions-header">
+              <div class="ai-suggestions-title">AI-Powered Suggestions</div>
+              <button class="ai-suggestions-refresh"><i class="fas fa-sync-alt"></i></button>
+            </div>
+            <div class="ai-suggestion-item">
+              <div class="ai-suggestion-name">Alternative to Lisinopril</div>
+              <div class="ai-suggestion-details">Based on your profile, Enalapril might be a suitable alternative with fewer side effects.</div>
+              <div class="ai-suggestion-actions">
+                <button class="ai-suggestion-btn primary">Learn More</button>
+                <button class="ai-suggestion-btn secondary">Ask Doctor</button>
+              </div>
+            </div>
+            <div class="ai-suggestion-item">
+              <div class="ai-suggestion-name">Potential Interaction</div>
+              <div class="ai-suggestion-details">Lisinopril may interact with ibuprofen. Consider acetaminophen for pain relief instead.</div>
+              <div class="ai-suggestion-actions">
+                <button class="ai-suggestion-btn primary">Details</button>
+                <button class="ai-suggestion-btn secondary">Dismiss</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="medication-content" id="history-medications">
+          <div class="medication-card">
+            <div class="medication-card-header">
+              <div class="medication-card-title"><i class="fas fa-pills"></i> Amoxicillin</div>
+              <div class="medication-card-status completed">Completed</div>
+            </div>
+            <div class="medication-card-details">
+              <div>500mg capsule • Take 3 times daily for 10 days</div>
+              <div>Prescribed by Dr. Johnson on 5 Dec 2023</div>
+            </div>
+            <div class="medication-card-schedule">
+              <div class="schedule-badge"><i class="fas fa-check-circle"></i> Completed course</div>
+            </div>
+          </div>
+          
+          <div class="medication-card">
+            <div class="medication-card-header">
+              <div class="medication-card-title"><i class="fas fa-pills"></i> Ibuprofen</div>
+              <div class="medication-card-status completed">Completed</div>
+            </div>
+            <div class="medication-card-details">
+              <div>400mg tablet • Take as needed for pain</div>
+              <div>Prescribed by Dr. Smith on 20 Nov 2023</div>
+            </div>
+            <div class="medication-card-schedule">
+              <div class="schedule-badge"><i class="fas fa-info-circle"></i> As needed</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="medication-content" id="reminders-medications">
+          <div class="medication-card">
+            <div class="medication-card-header">
+              <div class="medication-card-title"><i class="fas fa-bell"></i> Medication Reminders</div>
+            </div>
+            <div class="medication-card-details">
+              <div>Set up reminders to never miss a dose</div>
+            </div>
+            <div class="medication-card-actions">
+              <button class="medication-card-btn refill" style="width: 100%;"><i class="fas fa-plus"></i> Add Reminder</button>
+            </div>
+          </div>
+          
+          <div class="medication-card">
+            <div class="medication-card-header">
+              <div class="medication-card-title"><i class="fas fa-pills"></i> Lisinopril Reminder</div>
+              <div class="medication-card-status active">Active</div>
+            </div>
+            <div class="medication-card-details">
+              <div>Daily at 8:00 AM</div>
+              <div>10mg tablet for blood pressure</div>
+            </div>
+            <div class="medication-card-actions">
+              <button class="medication-card-btn skipped"><i class="fas fa-edit"></i> Edit</button>
+              <button class="medication-card-btn taken"><i class="fas fa-bell-slash"></i> Disable</button>
+            </div>
+          </div>
+          
+          <div class="medication-card">
+            <div class="medication-card-header">
+              <div class="medication-card-title"><i class="fas fa-pills"></i> Atorvastatin Reminder</div>
+              <div class="medication-card-status active">Active</div>
+            </div>
+            <div class="medication-card-details">
+              <div>Daily at 8:00 PM</div>
+              <div>20mg tablet for cholesterol</div>
+            </div>
+            <div class="medication-card-actions">
+              <button class="medication-card-btn skipped"><i class="fas fa-edit"></i> Edit</button>
+              <button class="medication-card-btn taken"><i class="fas fa-bell-slash"></i> Disable</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nutrition Section -->
+      <section class="section" id="nutrition">
+        <div class="nutrition-header">
+          <div class="nutrition-title">Nutrition & Fitness</div>
+          <button class="add-nutrition-btn" onclick="openAddMealModal()"><i class="fas fa-plus"></i> Log Meal</button>
+        </div>
+        
+        <div class="nutrition-summary">
+          <div class="nutrition-summary-grid">
+            <div class="nutrition-summary-item">
+              <div class="nutrition-summary-value">1,850</div>
+              <div class="nutrition-summary-label">Calories Today</div>
+              <div class="nutrition-summary-progress">
+                <div class="nutrition-summary-progress-fill" style="width: 62%;"></div>
+              </div>
+              <div class="nutrition-summary-label">62% of 3,000 goal</div>
+            </div>
+            <div class="nutrition-summary-item">
+              <div class="nutrition-summary-value">68 kg</div>
+              <div class="nutrition-summary-label">Current Weight</div>
+              <div class="nutrition-summary-progress">
+                <div class="nutrition-summary-progress-fill" style="width: 90%; background: var(--accent);"></div>
+              </div>
+              <div class="nutrition-summary-label">90% to 65 kg goal</div>
+            </div>
+            <div class="nutrition-summary-item">
+              <div class="nutrition-summary-value">5.2 L</div>
+              <div class="nutrition-summary-label">Water Today</div>
+              <div class="nutrition-summary-progress">
+                <div class="nutrition-summary-progress-fill" style="width: 87%; background: var(--primary);"></div>
+              </div>
+              <div class="nutrition-summary-label">87% of 6 L goal</div>
+            </div>
+            <div class="nutrition-summary-item">
+              <div class="nutrition-summary-value">7,843</div>
+              <div class="nutrition-summary-label">Steps Today</div>
+              <div class="nutrition-summary-progress">
+                <div class="nutrition-summary-progress-fill" style="width: 78%; background: var(--secondary);"></div>
+              </div>
+              <div class="nutrition-summary-label">78% of 10,000 goal</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nutrition-tabs">
+          <div class="nutrition-tab active" onclick="switchNutritionTab('meals')">Meals</div>
+          <div class="nutrition-tab" onclick="switchNutritionTab('water')">Water</div>
+          <div class="nutrition-tab" onclick="switchNutritionTab('fitness')">Fitness</div>
+        </div>
+        
+        <div class="nutrition-content active" id="meals-nutrition">
+          <div class="meal-card">
+            <div class="meal-card-header">
+              <div class="meal-card-title">Breakfast</div>
+              <div class="meal-card-time">8:30 AM</div>
+            </div>
+            <div class="meal-card-items">
+              <div class="meal-item">
+                <div class="meal-item-name">Oatmeal with berries</div>
+                <div class="meal-item-calories">320 cal</div>
+              </div>
+              <div class="meal-item">
+                <div class="meal-item-name">Greek yogurt</div>
+                <div class="meal-item-calories">150 cal</div>
+              </div>
+              <div class="meal-item">
+                <div class="meal-item-name">Green tea</div>
+                <div class="meal-item-calories">0 cal</div>
+              </div>
+            </div>
+            <div class="meal-card-total">
+              <div>Total</div>
+              <div>470 calories</div>
+            </div>
+          </div>
+          
+          <div class="meal-card">
+            <div class="meal-card-header">
+              <div class="meal-card-title">Lunch</div>
+              <div class="meal-card-time">1:15 PM</div>
+            </div>
+            <div class="meal-card-items">
+              <div class="meal-item">
+                <div class="meal-item-name">Grilled chicken salad</div>
+                <div class="meal-item-calories">450 cal</div>
+              </div>
+              <div class="meal-item">
+                <div class="meal-item-name">Whole grain bread</div>
+                <div class="meal-item-calories">140 cal</div>
+              </div>
+              <div class="meal-item">
+                <div class="meal-item-name">Apple</div>
+                <div class="meal-item-calories">95 cal</div>
+              </div>
+            </div>
+            <div class="meal-card-total">
+              <div>Total</div>
+              <div>685 calories</div>
+            </div>
+          </div>
+          
+          <div class="meal-card">
+            <div class="meal-card-header">
+              <div class="meal-card-title">Dinner</div>
+              <div class="meal-card-time">7:45 PM</div>
+            </div>
+            <div class="meal-card-items">
+              <div class="meal-item">
+                <div class="meal-item-name">Salmon with quinoa</div>
+                <div class="meal-item-calories">520 cal</div>
+              </div>
+              <div class="meal-item">
+                <div class="meal-item-name">Steamed vegetables</div>
+                <div class="meal-item-calories">120 cal</div>
+              </div>
+              <div class="meal-item">
+                <div class="meal-item-name">Glass of red wine</div>
+                <div class="meal-item-calories">125 cal</div>
+              </div>
+            </div>
+            <div class="meal-card-total">
+              <div>Total</div>
+              <div>765 calories</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nutrition-content" id="water-nutrition">
+          <div class="water-tracker">
+            <div class="water-tracker-header">
+              <div class="water-tracker-title">Water Intake</div>
+              <div class="water-tracker-goal">5.2 / 6.0 L today</div>
+            </div>
+            <div class="water-tracker-bottles">
+              <div class="water-bottle filled"><i class="fas fa-wine-bottle"></i></div>
+              <div class="water-bottle filled"><i class="fas fa-wine-bottle"></i></div>
+              <div class="water-bottle filled"><i class="fas fa-wine-bottle"></i></div>
+              <div class="water-bottle filled"><i class="fas fa-wine-bottle"></i></div>
+              <div class="water-bottle filled"><i class="fas fa-wine-bottle"></i></div>
+              <div class="water-bottle"><i class="fas fa-wine-bottle"></i></div>
+            </div>
+          </div>
+          
+          <div class="bmi-calculator">
+            <div class="bmi-calculator-header">
+              <div class="bmi-calculator-title">BMI Calculator</div>
+            </div>
+            <div class="bmi-calculator-form">
+              <div class="record-form-group">
+                <label class="record-form-label">Height (cm)</label>
+                <input type="number" class="record-form-input" value="175">
+              </div>
+              <div class="record-form-group">
+                <label class="record-form-label">Weight (kg)</label>
+                <input type="number" class="record-form-input" value="68">
+              </div>
+              <button class="record-form-btn submit" style="width: 100%;" onclick="calculateBMI()">Calculate BMI</button>
+            </div>
+            <div class="bmi-calculator-result" id="bmi-result" style="display: none;">
+              <div class="bmi-value">22.2</div>
+              <div class="bmi-category">Normal weight</div>
+              <div class="bmi-scale">
+                <div class="bmi-marker" style="left: 15%;"></div>
+                <div class="bmi-marker" style="left: 35%;"></div>
+                <div class="bmi-marker" style="left: 55%;"></div>
+                <div class="bmi-marker" style="left: 75%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="nutrition-content" id="fitness-nutrition">
+          <div class="device-sync">
+            <div class="device-sync-header">
+              <div class="device-sync-title">Connected Devices</div>
+              <button class="device-sync-btn"><i class="fas fa-link"></i> Sync Now</button>
+            </div>
+            <div class="device-list">
+              <div class="device-item">
+                <div class="device-icon">
+                  <i class="fas fa-watch"></i>
                 </div>
-
-                <div class="quick-actions">
-                    <div class="action-card" onclick="showSection('telemedicine')">
-                        <i class="fas fa-user-md"></i>
-                        <h3>Doctor</h3>
-                        <p>Consult now</p>
-                    </div>
-                    <div class="action-card" onclick="showSection('medication')">
-                        <i class="fas fa-pills"></i>
-                        <h3>Medication</h3>
-                        <p>2 due today</p>
-                    </div>
-                    <div class="action-card" onclick="showSection('emergency')">
-                        <i class="fas fa-ambulance"></i>
-                        <h3>Emergency</h3>
-                        <p>Quick help</p>
-                    </div>
-                    <div class="action-card" onclick="showSection('nutrition')">
-                        <i class="fas fa-apple-alt"></i>
-                        <h3>Nutrition</h3>
-                        <p>Track meals</p>
-                    </div>
+                <div class="device-info">
+                  <div class="device-name">Apple Watch Series 7</div>
+                  <div class="device-status">Last synced: 5 minutes ago</div>
                 </div>
-
-                <div class="health-stats">
-                    <div class="stats-header">
-                        <h3>Health Stats</h3>
-                        <button><i class="fas fa-ellipsis-h"></i></button>
-                    </div>
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-value">72</div>
-                            <div class="stat-label">Heart Rate</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">8,240</div>
-                            <div class="stat-label">Steps</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">7.5</div>
-                            <div class="stat-label">Sleep (hrs)</div>
-                        </div>
-                    </div>
+                <div class="device-action">Disconnect</div>
+              </div>
+              <div class="device-item">
+                <div class="device-icon">
+                  <i class="fas fa-scale"></i>
                 </div>
-
-                <div class="recent-activity">
-                    <div class="activity-header">
-                        <h3>Recent Activity</h3>
-                        <button><i class="fas fa-ellipsis-h"></i></button>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-pills"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Medication Taken</h4>
-                            <p>Metformin 500mg</p>
-                        </div>
-                        <div class="activity-time">9:30 AM</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-user-md"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Doctor Consultation</h4>
-                            <p>Dr. Lama Affara - Cardiology</p>
-                        </div>
-                        <div class="activity-time">Yesterday</div>
-                    </div>
+                <div class="device-info">
+                  <div class="device-name">Withings Smart Scale</div>
+                  <div class="device-status">Last synced: 2 days ago</div>
                 </div>
-            </section>
+                <div class="device-action">Disconnect</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="vital-card">
+            <div class="vital-header">
+              <div class="vital-title"><i class="fas fa-walking"></i> Steps</div>
+              <div class="vital-date">Today</div>
+            </div>
+            <div class="vital-stats">
+              <div class="vital-stat">
+                <div class="vital-label">Steps</div>
+                <div class="vital-value">7,843</div>
+                <div class="vital-range">Goal: 10,000</div>
+              </div>
+              <div class="vital-stat">
+                <div class="vital-label">Distance</div>
+                <div class="vital-value">5.6 km</div>
+                <div class="vital-range">Calories: 420</div>
+              </div>
+            </div>
+            <div class="vital-trend">
+              <div class="trend-line"></div>
+              <div class="trend-data">
+                <div class="trend-point" style="height: 30%;"></div>
+                <div class="trend-point" style="height: 45%;"></div>
+                <div class="trend-point" style="height: 60%;"></div>
+                <div class="trend-point" style="height: 40%;"></div>
+                <div class="trend-point" style="height: 80%;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="vital-card">
+            <div class="vital-header">
+              <div class="vital-title"><i class="fas fa-heartbeat"></i> Heart Rate</div>
+              <div class="vital-date">Today</div>
+            </div>
+            <div class="vital-stats">
+              <div class="vital-stat">
+                <div class="vital-label">Resting</div>
+                <div class="vital-value">68 bpm</div>
+                <div class="vital-range">Normal: 60-100</div>
+              </div>
+              <div class="vital-stat">
+                <div class="vital-label">Max Today</div>
+                <div class="vital-value">142 bpm</div>
+                <div class="vital-range">During workout</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <!-- Telemedicine Section -->
-            <section class="section" id="telemedicine">
-                <div class="health-stats">
-                    <div class="stats-header">
-                        <h3>Available Doctors</h3>
-                        <button><i class="fas fa-sliders-h"></i></button>
-                    </div>
-                </div>
+      <!-- Nearby Section -->
+      <section class="section" id="nearby">
+        <div class="nearby-header">
+          <div class="nearby-title">Nearby Medical Services</div>
+          <button class="nearby-filter"><i class="fas fa-filter"></i> Filter</button>
+        </div>
+        
+        <div class="nearby-map">
+          <div class="map-marker hospital"></div>
+          <div class="map-marker clinic"></div>
+          <div class="map-marker pharmacy"></div>
+          <div class="map-marker user"></div>
+        </div>
+        
+        <div class="nearby-list">
+          <div class="nearby-item">
+            <div class="nearby-item-header">
+              <div class="nearby-item-title">AUBMC</div>
+              <div class="nearby-item-distance">1.2 km</div>
+            </div>
+            <div class="nearby-item-type hospital">Hospital</div>
+            <div class="nearby-item-address">Hamra, Beirut</div>
+            <div class="nearby-item-footer">
+              <div class="nearby-item-rating">
+                <i class="fas fa-star" style="color: gold;"></i>
+                <span>4.7</span>
+                <span>(128 reviews)</span>
+              </div>
+              <div class="nearby-item-actions">
+                <button class="nearby-item-btn directions"><i class="fas fa-directions"></i> Directions</button>
+                <button class="nearby-item-btn call"><i class="fas fa-phone"></i> Call</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="nearby-item">
+            <div class="nearby-item-header">
+              <div class="nearby-item-title">Hage Chehade Clinic</div>
+              <div class="nearby-item-distance">0.8 km</div>
+            </div>
+            <div class="nearby-item-type clinic">Clinic</div>
+            <div class="nearby-item-address">cheheem, Iqleem</div>
+            <div class="nearby-item-footer">
+              <div class="nearby-item-rating">
+                <i class="fas fa-star" style="color: gold;"></i>
+                <span>4.5</span>
+                <span>(64 reviews)</span>
+              </div>
+              <div class="nearby-item-actions">
+                <button class="nearby-item-btn directions"><i class="fas fa-directions"></i> Directions</button>
+                <button class="nearby-item-btn call"><i class="fas fa-phone"></i> Call</button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="nearby-item">
+            <div class="nearby-item-header">
+              <div class="nearby-item-title">Mawed Pharmacy</div>
+              <div class="nearby-item-distance">0.5 km</div>
+            </div>
+            <div class="nearby-item-type pharmacy">Pharmacy</div>
+            <div class="nearby-item-address">Debbeih, Debbeih</div>
+            <div class="nearby-item-footer">
+              <div class="nearby-item-rating">
+                <i class="fas fa-star" style="color: gold;"></i>
+                <span>4.3</span>
+                <span>(42 reviews)</span>
+              </div>
+              <div class="nearby-item-actions">
+                <button class="nearby-item-btn directions"><i class="fas fa-directions"></i> Directions</button>
+                <button class="nearby-item-btn call"><i class="fas fa-phone"></i> Call</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="pharmacy-stock">
+          <div class="pharmacy-stock-header">
+            <div class="pharmacy-stock-title">Pharmacy Stock Check</div>
+          </div>
+          <div class="pharmacy-stock-search">
+            <input type="text" placeholder="Search for medication...">
+            <button><i class="fas fa-search"></i></button>
+          </div>
+          <div class="pharmacy-stock-item">
+            <div class="pharmacy-stock-info">
+              <div class="pharmacy-stock-name">Lisinopril 10mg</div>
+              <div class="pharmacy-stock-details">30 tablets • $12.99</div>
+            </div>
+            <div class="pharmacy-stock-status available">In Stock</div>
+          </div>
+          <div class="pharmacy-stock-item">
+            <div class="pharmacy-stock-info">
+              <div class="pharmacy-stock-name">Atorvastatin 20mg</div>
+              <div class="pharmacy-stock-details">30 tablets • $15.49</div>
+            </div>
+            <div class="pharmacy-stock-status low">Low Stock</div>
+          </div>
+          <div class="pharmacy-stock-item">
+            <div class="pharmacy-stock-info">
+              <div class="pharmacy-stock-name">Amoxicillin 500mg</div>
+              <div class="pharmacy-stock-details">21 capsules • $8.99</div>
+            </div>
+            <div class="pharmacy-stock-status available">In Stock</div>
+          </div>
+        </div>
+        
+        <div class="emergency-facilities">
+          <div class="emergency-facilities-header">
+            <div class="emergency-facilities-title">Emergency Facilities</div>
+          </div>
+          <div class="emergency-facilities-list">
+            <div class="emergency-facility">
+              <div class="emergency-facility-icon">
+                <i class="fas fa-ambulance"></i>
+              </div>
+              <div class="emergency-facility-info">
+                <div class="emergency-facility-name">City Emergency Center</div>
+                <div class="emergency-facility-distance">2.1 km • Open 24/7</div>
+              </div>
+              <div class="emergency-facility-action">Directions</div>
+            </div>
+            <div class="emergency-facility">
+              <div class="emergency-facility-icon">
+                <i class="fas fa-first-aid"></i>
+              </div>
+              <div class="emergency-facility-info">
+                <div class="emergency-facility-name">Urgent Care Clinic</div>
+                <div class="emergency-facility-distance">1.5 km • Open until 10 PM</div>
+              </div>
+              <div class="emergency-facility-action">Directions</div>
+            </div>
+            <div class="emergency-facility">
+              <div class="emergency-facility-icon">
+                <i class="fas fa-burn"></i>
+              </div>
+              <div class="emergency-facility-info">
+                <div class="emergency-facility-name">Poison Control Center</div>
+                <div class="emergency-facility-distance">24/7 Hotline</div>
+              </div>
+              <div class="emergency-facility-action">Call</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                <div class="doctor-card">
-                    <div class="doctor-avatar">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <div class="doctor-info">
-                        <h3>Dr. Lynn el Arwadi</h3>
-                        <p>Cardiologist</p>
-                        <div class="doctor-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                            4.7 (128)
-                        </div>
-                    </div>
-                    <div class="doctor-action">
-                        <button class="consult-btn">Consult</button>
-                    </div>
-                </div>
+      <!-- Review & Pay Section -->
+      <section class="section" id="review-pay">
+        <div class="doctor-profile">
+          <img src="https://i.pravatar.cc/80?img=12" alt="Dr Kevon Lane">
+          <div class="name">Dr. Hilal Kanaan</div>
+          <div class="specialty">Cardiologist</div>
+        </div>
+        
+        <div class="info-section">
+          <div class="section-title">Appointment</div>
+          <div class="patient-info">
+            <img src="https://i.pravatar.cc/40?img=5" alt="Patient">
+            <div>
+              <div class="name">Lynn Al Arwadi</div>
+              <div>Myself</div>
+            </div>
+          </div>
+          <div class="note">Note: You can submit patient detail, old prescription, and text report in the the Drop link.</div>
+          <button class="upload-btn">Click to upload prescription</button>
+        </div>
+        
+        <div class="info-section">
+          <div class="section-title">Schedule <i class="fas fa-pen"></i></div>
+          <div class="schedule-item">
+            <div class="time">09:30</div>
+            <div class="date">17 Feb, 2024</div>
+          </div>
+        </div>
+        
+        <div class="info-section">
+          <div class="section-title">Payment</div>
+          <div class="section-title">Promo Code</div>
+          <div class="promo-code">
+            <input type="text" placeholder="Promo Code">
+            <button>Apply</button>
+          </div>
+          
+          <div class="section-title">Bill Details</div>
+          <div class="bill-details">
+            <div class="bill-row">
+              <span>Consultation fees:</span>
+              <span>$200</span>
+            </div>
+            <div class="bill-row">
+              <span>Booking fee</span>
+              <span>$10</span>
+            </div>
+            <div class="bill-row">
+              <span>Promo applied</span>
+              <span>-$3</span>
+            </div>
+            <div class="bill-row total">
+              <span>Total (incl. VAT)</span>
+              <span>$207</span>
+            </div>
+          </div>
+          
+          <div class="section-title">Pay with</div>
+          <div class="payment-method">
+            <div class="card-info">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard">
+              <div class="card-number">•••• 5941</div>
+            </div>
+            <div class="change-btn">Change</div>
+          </div>
+        </div>
+        
+        <div class="fixed-pay-btn" onclick="openPaymentConfirm()">Pay $207</div>
+      </section>
+    </main>
 
-                <div class="doctor-card">
-                    <div class="doctor-avatar">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <div class="doctor-info">
-                        <h3>Dr. Hilal Kanaan</h3>
-                        <p>General Physician</p>
-                        <div class="doctor-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            5.0 (89)
-                        </div>
-                    </div>
-                    <div class="doctor-action">
-                        <button class="consult-btn">Consult</button>
-                    </div>
-                </div>
+    <!-- SOS Button (Always visible) -->
+    <button class="sos-button" id="sos-button" onclick="triggerSOS()"><i class="fas fa-bolt"></i></button>
+    
+    <!-- Add Record Button -->
+    <button class="add-record-btn" id="add-record-btn" onclick="openAddRecordModal()"><i class="fas fa-plus"></i></button>
 
-                <div class="doctor-card">
-                    <div class="doctor-avatar">
-                        <i class="fas fa-user-md"></i>
-                    </div>
-                    <div class="doctor-info">
-                        <h3>Dr. Lama Affara</h3>
-                        <p>Mental Health</p>
-                        <div class="doctor-rating">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            4.9 (215)
-                        </div>
-                    </div>
-                    <div class="doctor-action">
-                        <button class="consult-btn">Consult</button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Emergency Section -->
-            <section class="section" id="emergency">
-                <div class="emergency-screen">
-                    <h2><i class="fas fa-exclamation-triangle"></i> Emergency Assistance</h2>
-                    <div class="hold-to-call">HOLD TO CALL</div>
-                    <p>Hold the button for 3 seconds to contact emergency services</p>
-                    <p>Your location and medical information will be shared</p>
-
-                    <div class="emergency-contacts">
-                        <h3><i class="fas fa-phone-alt"></i> Emergency Contacts</h3>
-                        <div class="activity-item">
-                            <div class="activity-icon" style="background: rgba(234, 67, 53, 0.1); color: var(--emergency);">
-                                <i class="fas fa-ambulance"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>Ambulance</h4>
-                                <p>911</p>
-                            </div>
-                            <div class="activity-time">
-                                <button style="background: var(--emergency); color: white; border: none; padding: 5px 10px; border-radius: 5px;">Call</button>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon" style="background: rgba(234, 67, 53, 0.1); color: var(--emergency);">
-                                <i class="fas fa-user-md"></i>
-                            </div>
-                            <div class="activity-details">
-                                <h4>Dr. Hilal Kanaan</h4>
-                                <p>Primary Care</p>
-                            </div>
-                            <div class="activity-time">
-                                <button style="background: var(--emergency); color: white; border: none; padding: 5px 10px; border-radius: 5px;">Call</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Medication Section -->
-            <section class="section" id="medication">
-                <div class="health-stats">
-                    <div class="stats-header">
-                        <h3>Today's Medications</h3>
-                        <button onclick="showModal('add-medication')"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-
-                <div class="medication-list">
-                    <div class="medication-item">
-                        <div class="medication-icon">
-                            <i class="fas fa-pills"></i>
-                        </div>
-                        <div class="medication-details">
-                            <h3>Panadol</h3>
-                            <p>500mg - For headache</p>
-                        </div>
-                        <div class="medication-time">8:00 AM</div>
-                        <div class="medication-status taken"></div>
-                    </div>
-                    <div class="medication-item">
-                        <div class="medication-icon">
-                            <i class="fas fa-pills"></i>
-                        </div>
-                        <div class="medication-details">
-                            <h3>augmentin</h3>
-                            <p>10mg - For stomache ache</p>
-                        </div>
-                        <div class="medication-time">2:00 PM</div>
-                        <div class="medication-status"></div>
-                    </div>
-                </div>
-
-                <div class="nutrition-card">
-                    <div class="nutrition-header">
-                        <h3>Nearby Pharmacies</h3>
-                        <button><i class="fas fa-map-marker-alt"></i></button>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background: rgba(52, 168, 83, 0.1); color: var(--secondary);">
-                            <i class="fas fa-clinic-medical"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Life Pharmacy</h4>
-                            <p>1.2km away | Open until 10PM</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Nutrition Section -->
-            <section class="section" id="nutrition">
-                <div class="nutrition-card">
-                    <div class="nutrition-header">
-                        <h3>Today's Nutrition</h3>
-                        <button onclick="showModal('add-food')"><i class="fas fa-plus"></i></button>
-                    </div>
-                    <div class="nutrition-progress">
-                        <div class="nutrition-progress-bar" style="width: 65%;"></div>
-                    </div>
-                    <div class="nutrition-macros">
-                        <div class="macro-item">
-                            <div class="macro-value">1,450</div>
-                            <div class="macro-label">Calories</div>
-                        </div>
-                        <div class="macro-item">
-                            <div class="macro-value">85g</div>
-                            <div class="macro-label">Protein</div>
-                        </div>
-                        <div class="macro-item">
-                            <div class="macro-value">45g</div>
-                            <div class="macro-label">Fat</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="nutrition-card">
-                    <div class="nutrition-header">
-                        <h3>Recent Meals</h3>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background: rgba(251, 188, 5, 0.1); color: var(--accent);">
-                            <i class="fas fa-utensils"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Breakfast</h4>
-                            <p>Oatmeal with fruits</p>
-                        </div>
-                        <div class="activity-time">450 cal</div>
-                    </div>
-                    <div class="activity-item">
-                        <div class="activity-icon" style="background: rgba(251, 188, 5, 0.1); color: var(--accent);">
-                            <i class="fas fa-hamburger"></i>
-                        </div>
-                        <div class="activity-details">
-                            <h4>Lunch</h4>
-                            <p>Grilled chicken salad</p>
-                        </div>
-                        <div class="activity-time">600 cal</div>
-                    </div>
-                </div>
-
-                <div class="nutrition-card">
-                    <div class="nutrition-header">
-                        <h3>Water Intake</h3>
-                    </div>
-                    <div style="display: flex; justify-content: space-around; padding: 15px 0;">
-                        <div style="text-align: center;">
-                            <div style="width: 50px; height: 50px; background: rgba(26, 115, 232, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 5px; color: var(--primary);">
-                                <i class="fas fa-glass-water"></i>
-                            </div>
-                            <div style="font-size: 0.8rem;">4/8 glasses</div>
-                        </div>
-                        <div style="text-align: center;">
-                            <div style="width: 50px; height: 50px; background: rgba(26, 115, 232, 0.1); border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 5px; color: var(--primary);">
-                                <i class="fas fa-droplet"></i>
-                            </div>
-                            <div style="font-size: 0.8rem;">1.2L</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Emergency Button -->
-        <button class="emergency-btn" onclick="showSection('emergency')">
-            <i class="fas fa-bell"></i>
-        </button>
-
-        <!-- Bottom Navigation -->
-        <nav class="bottom-nav">
-            <a href="#" class="nav-item active" onclick="showSection('dashboard')">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('telemedicine')">
-                <i class="fas fa-user-md"></i>
-                <span>Doctors</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('medication')">
-                <i class="fas fa-pills"></i>
-                <span>Meds</span>
-            </a>
-            <a href="#" class="nav-item" onclick="showSection('nutrition')">
-                <i class="fas fa-apple-alt"></i>
-                <span>Health</span>
-            </a>
-        </nav>
+    <!-- Appointment Modal -->
+    <div class="modal" id="appointment-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="back-btn" onclick="closeAppointmentModal()"><i class="fas fa-arrow-left"></i></button>
+          <div class="title">Book Appointment</div>
+        </div>
+        <div class="content">
+          <div class="doctor-header">
+            <img src="https://i.pravatar.cc/80?img=12" alt="Dr Kevon Lane">
+            <div class="doctor-name">Dr. Hilal Kanaan</div>
+            <div class="doctor-spec">Cardiologist</div>
+            <div class="doctor-degrees">MBBS, BCS, MCPS (Gynae & Obs), MRCOG (UK)</div>
+          </div>
+          <div class="stats">
+            <div><div class="label">Experience</div><div class="value">05+ Years</div></div>
+            <div><div class="label">Rating</div><div class="value">4.9</div></div>
+          </div>
+          <div class="fee-box">
+            <div class="fee-label">Consultation Fee</div>
+            <div class="fee-value">$200</div>
+          </div>
+          <div class="calendar-header">
+            <button class="nav-btn" onclick="prevMonth()"><i class="fas fa-chevron-left"></i></button>
+            <div class="month">February</div>
+            <button class="nav-btn" onclick="nextMonth()"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div class="days"><div>Fri</div><div>Sat</div><div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div></div>
+          <div class="times">
+            <div class="time-slot unavailable">06:00</div>
+            <div class="time-slot unavailable">06:30</div>
+            <div class="time-slot unavailable">07:00</div>
+            <div class="time-slot unavailable">07:30</div>
+            <div class="time-slot available" onclick="chooseSlot(this)">08:00</div>
+            <div class="time-slot available" onclick="chooseSlot(this)">08:30</div>
+            <div class="time-slot available" onclick="chooseSlot(this)">09:00</div>
+            <div class="time-slot available" onclick="chooseSlot(this)">09:30</div>
+          </div>
+          <button class="view-all">View All Availability</button>
+          <div class="reviews">
+            <div class="reviews-header">
+              <div class="label">What patients are saying</div>
+              <div class="rating"><span class="value">4.5</span><i class="fas fa-star" style="color:gold"></i></div>
+              <button class="add-review">+ Add Review</button>
+            </div>
+            <div class="rating-bar">
+              <div class="bar-row">5<span></span><div class="bar"><div class="bar-fill" style="width:60%;"></div></div><span>Excellent</span></div>
+              <div class="bar-row">4<span></span><div class="bar"><div class="bar-fill" style="width:25%;"></div></div><span>Good</span></div>
+              <div class="bar-row">3<span></span><div class="bar"><div class="bar-fill" style="width:10%;"></div></div><span>Average</span></div>
+              <div class="bar-row">2<span></span><div class="bar"><div class="bar-fill" style="width:3%;"></div></div><span>Below</span></div>
+              <div class="bar-row">1<span></span><div class="bar"><div class="bar-fill" style="width:2%;"></div></div><span>Poor</span></div>
+            </div>
+            <div class="review-item"><div class="author"><strong>Theresa Webb</strong><span>★ 4.6</span></div><div class="text">I was so worried about my baby's health... ensuring both my baby and I were in good hands.</div></div>
+            <div class="review-item"><div class="author"><strong>Devon Lane</strong><span>★ 4.6</span></div><div class="text">I had this unexpected complication... quickly thinking and decisive actions.</div></div>
+            <button class="see-all">See All Reviews</button>
+          </div>
+          <button id="book-btn" class="book-btn-bottom" disabled onclick="confirmBooking()">Book Appointment</button>
+        </div>
+      </div>
     </div>
 
+    <!-- Payment Confirmation Modal -->
+    <div class="modal-overlay" id="payment-overlay"></div>
+    <div class="payment-confirm-modal" id="payment-confirm">
+      <div class="payment-confirm-header">
+        <div class="payment-confirm-title">Confirm Payment</div>
+        <button class="close-payment-confirm" onclick="closePaymentConfirm()"><i class="fas fa-times"></i></button>
+      </div>
+      
+      <div class="payment-method-confirm">
+        <div class="card-info">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" width="30">
+          <span class="card-number">•••• 5941</span>
+        </div>
+        <div class="change-btn">Change</div>
+      </div>
+      
+      <div class="section-title">Bill Details</div>
+      <div class="bill-details-confirm">
+        <div class="bill-row-confirm">
+          <span>Consultation fees:</span>
+          <span>$200</span>
+        </div>
+        <div class="bill-row-confirm">
+          <span>Booking fee</span>
+          <span>$10</span>
+        </div>
+        <div class="bill-row-confirm">
+          <span>Promo applied</span>
+          <span>-$3</span>
+        </div>
+        <div class="bill-row-confirm total-confirm">
+          <span>Total (incl. VAT)</span>
+          <span>$207</span>
+        </div>
+      </div>
+      
+      <div class="currency-note">
+        This booking will be charged in USD (USD 207) Contact the bank directly for their policies regarding currency conversion and applicable foreign transaction fees.
+      </div>
+      
+      <button class="swipe-to-pay" onclick="processPayment()">
+        <i class="fas fa-lock"></i> Swipe to Pay
+      </button>
+    </div>
+
+    <!-- Emergency Modal -->
+    <div class="modal" id="emergency-modal">
+      <div class="emergency-modal-content">
+        <div class="emergency-modal-icon"><i class="fas fa-bell"></i></div>
+        <div class="emergency-modal-title">Emergency Alert Activated</div>
+        <div class="emergency-modal-text">Emergency services have been notified with your location. Help is on the way.</div>
+        <div class="emergency-countdown" id="countdown">5</div>
+        <div class="emergency-modal-text">We're also notifying your emergency contacts:</div>
+        
+        <div class="emergency-contacts">
+          <div class="emergency-contact">
+            <img src="https://i.pravatar.cc/40?img=11" alt="Contact">
+            <div>
+              <div class="emergency-contact-name">Hussein Mkhader</div>
+              <div class="emergency-contact-relation">Spouse</div>
+            </div>
+          </div>
+          <div class="emergency-contact">
+            <img src="https://i.pravatar.cc/40?img=28" alt="Contact">
+            <div>
+              <div class="emergency-contact-name">Lama Aafara</div>
+              <div class="emergency-contact-relation">Sister</div>
+            </div>
+          </div>
+        </div>
+        
+        <button class="emergency-modal-btn secondary" onclick="closeEmergencyModal()">Cancel Emergency</button>
+      </div>
+    </div>
+
+    <!-- First Aid Modal -->
+    <div class="modal" id="first-aid-modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button class="back-btn" onclick="closeFirstAidModal()"><i class="fas fa-arrow-left"></i></button>
+          <div class="title" id="first-aid-title">First Aid Instructions</div>
+        </div>
+        <div class="content" id="first-aid-content">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- Add Record Modal -->
+    <div class="record-modal" id="add-record-modal">
+      <div class="record-modal-content">
+        <div class="record-modal-header">
+          <div class="record-modal-title">Add New Record</div>
+          <button class="record-modal-close" onclick="closeAddRecordModal()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Record Type</label>
+          <select class="record-form-select" id="record-type">
+            <option value="">Select record type</option>
+            <option value="medical">Medical Report</option>
+            <option value="lab">Lab Result</option>
+            <option value="image">Medical Image</option>
+            <option value="prescription">Prescription</option>
+            <option value="vital">Vital Signs</option>
+          </select>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Title</label>
+          <input type="text" class="record-form-input" placeholder="Enter record title">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Date</label>
+          <input type="date" class="record-form-input">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Description</label>
+          <textarea class="record-form-textarea" placeholder="Enter any additional details"></textarea>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Upload File</label>
+          <div class="image-preview" id="image-preview">
+            <div class="image-preview-placeholder">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <div>No file selected</div>
+            </div>
+          </div>
+          <button class="upload-image-btn" onclick="document.getElementById('file-input').click()">Choose File</button>
+          <input type="file" id="file-input" style="display: none;">
+        </div>
+        
+        <div class="record-form-actions">
+          <button class="record-form-btn cancel" onclick="closeAddRecordModal()">Cancel</button>
+          <button class="record-form-btn submit">Save Record</button>
+        </div>
+      </div>
+    </div>
+    
     <!-- Add Medication Modal -->
-    <div class="modal" id="add-medication">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Medication</h3>
-                <button class="close-modal" onclick="hideModal('add-medication')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Medication Name</label>
-                    <input type="text" placeholder="e.g. Metformin">
-                </div>
-                <div class="form-group">
-                    <label>Dosage</label>
-                    <input type="text" placeholder="e.g. 500mg">
-                </div>
-                <div class="form-group">
-                    <label>Time</label>
-                    <input type="time">
-                </div>
-                <div class="form-group">
-                    <label>Instructions</label>
-                    <textarea placeholder="Any special instructions"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="hideModal('add-medication')">Cancel</button>
-                <button class="btn btn-primary">Save</button>
-            </div>
+    <div class="record-modal" id="add-medication-modal">
+      <div class="record-modal-content">
+        <div class="record-modal-header">
+          <div class="record-modal-title">Add Medication</div>
+          <button class="record-modal-close" onclick="closeAddMedicationModal()"><i class="fas fa-times"></i></button>
         </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Medication Name</label>
+          <input type="text" class="record-form-input" placeholder="Enter medication name">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Dosage</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="number" class="record-form-input" placeholder="Amount" style="flex: 2;">
+            <select class="record-form-select" style="flex: 1;">
+              <option>mg</option>
+              <option>mcg</option>
+              <option>g</option>
+              <option>ml</option>
+              <option>IU</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Form</label>
+          <select class="record-form-select">
+            <option>Tablet</option>
+            <option>Capsule</option>
+            <option>Liquid</option>
+            <option>Injection</option>
+            <option>Topical</option>
+            <option>Inhaler</option>
+          </select>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Frequency</label>
+          <select class="record-form-select">
+            <option>Once daily</option>
+            <option>Twice daily</option>
+            <option>Three times daily</option>
+            <option>Four times daily</option>
+            <option>Every other day</option>
+            <option>Weekly</option>
+            <option>As needed</option>
+          </select>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Time of Day</label>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <label style="display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox"> Morning
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox"> Afternoon
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox"> Evening
+            </label>
+            <label style="display: flex; align-items: center; gap: 4px;">
+              <input type="checkbox"> Night
+            </label>
+          </div>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Start Date</label>
+          <input type="date" class="record-form-input">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">End Date (if applicable)</label>
+          <input type="date" class="record-form-input">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Prescribed By</label>
+          <input type="text" class="record-form-input" placeholder="Doctor's name">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Reason</label>
+          <input type="text" class="record-form-input" placeholder="Why are you taking this?">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Notes</label>
+          <textarea class="record-form-textarea" placeholder="Any special instructions"></textarea>
+        </div>
+        
+        <div class="record-form-actions">
+          <button class="record-form-btn cancel" onclick="closeAddMedicationModal()">Cancel</button>
+          <button class="record-form-btn submit" onclick="saveMedication()">Save Medication</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Add Meal Modal -->
+    <div class="record-modal" id="add-meal-modal">
+      <div class="record-modal-content">
+        <div class="record-modal-header">
+          <div class="record-modal-title">Log Meal</div>
+          <button class="record-modal-close" onclick="closeAddMealModal()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Meal Type</label>
+          <select class="record-form-select">
+            <option>Breakfast</option>
+            <option>Lunch</option>
+            <option>Dinner</option>
+            <option>Snack</option>
+          </select>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Time</label>
+          <input type="time" class="record-form-input">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Food Items</label>
+          <div id="meal-items">
+            <!-- Meal items will be added here -->
+          </div>
+          <button class="upload-image-btn" onclick="addMealItem()" style="margin-top: 8px;"><i class="fas fa-plus"></i> Add Food Item</button>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Notes</label>
+          <textarea class="record-form-textarea" placeholder="Any notes about this meal"></textarea>
+        </div>
+        
+        <div class="record-form-actions">
+          <button class="record-form-btn cancel" onclick="closeAddMealModal()">Cancel</button>
+          <button class="record-form-btn submit" onclick="saveMeal()">Save Meal</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Edit Health Summary Modal -->
+    <div class="record-modal" id="edit-health-modal">
+      <div class="record-modal-content">
+        <div class="record-modal-header">
+          <div class="record-modal-title">Edit Health Summary</div>
+          <button class="record-modal-close" onclick="closeEditHealthModal()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Blood Type</label>
+          <select class="record-form-select">
+            <option value="">Select blood type</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Height (cm)</label>
+          <input type="number" class="record-form-input" value="175">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Weight (kg)</label>
+          <input type="number" class="record-form-input" value="68">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Allergies</label>
+          <input type="text" class="record-form-input" value="Penicillin">
+        </div>
+        
+        <div class="record-form-group">
+          <label class="record-form-label">Chronic Conditions</label>
+          <input type="text" class="record-form-input" value="Asthma">
+        </div>
+        
+        <div class="record-form-actions">
+          <button class="record-form-btn cancel" onclick="closeEditHealthModal()">Cancel</button>
+          <button class="record-form-btn submit" onclick="saveHealthSummary()">Save Changes</button>
+        </div>
+      </div>
     </div>
 
-    <!-- Add Food Modal -->
-    <div class="modal" id="add-food">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Add Food</h3>
-                <button class="close-modal" onclick="hideModal('add-food')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label>Meal Type</label>
-                    <select>
-                        <option>Breakfast</option>
-                        <option>Lunch</option>
-                        <option>Dinner</option>
-                        <option>Snack</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Food Item</label>
-                    <input type="text" placeholder="e.g. Grilled chicken">
-                </div>
-                <div class="form-group">
-                    <label>Calories</label>
-                    <input type="number" placeholder="Estimated calories">
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="hideModal('add-food')">Cancel</button>
-                <button class="btn btn-primary">Save</button>
-            </div>
-        </div>
-    </div>
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-home"></i><span>Home</span></div>
+      <div class="nav-item" onclick="showSection('doctors')"><i class="fas fa-user-md"></i><span>Doctors</span></div>
+      <div class="nav-item" onclick="showSection('emergency')"><i class="fas fa-ambulance"></i><span>Emergency</span></div>
+      <div class="nav-item" onclick="showSection('records')"><i class="fas fa-file-medical"></i><span>Records</span></div>
+      <div class="nav-item" onclick="showSection('medication')"><i class="fas fa-pills"></i><span>Med</span></div>
+    </nav>
+  </div>
 
-    <script>
-        // Show/hide sections
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            document.getElementById(sectionId).classList.add('active');
-
-            // Update active nav item
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            
-            if(sectionId === 'dashboard') {
-                document.querySelector('.bottom-nav .nav-item:nth-child(1)').classList.add('active');
-            } else if(sectionId === 'telemedicine') {
-                document.querySelector('.bottom-nav .nav-item:nth-child(2)').classList.add('active');
-            } else if(sectionId === 'medication') {
-                document.querySelector('.bottom-nav .nav-item:nth-child(3)').classList.add('active');
-            } else if(sectionId === 'nutrition') {
-                document.querySelector('.bottom-nav .nav-item:nth-child(4)').classList.add('active');
-            }
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let selectedTime = null;
+      let selectedDate = '17 Feb, 2024'; // Default date for demo
+      let ambulanceInterval = null;
+      let progress = 0;
+      let countdownInterval = null;
+      let countdown = 5;
+      let chatActive = false;
+      
+      // Show section function
+      window.showSection = (id) => {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        const sec = document.getElementById(id);
+        if (sec) sec.classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelector(`.nav-item[onclick="showSection('${id}')"]`)?.classList.add('active');
+        
+        // Show/hide add record button based on section
+        const addRecordBtn = document.getElementById('add-record-btn');
+        if (id === 'records') {
+          addRecordBtn.style.display = 'flex';
+        } else {
+          addRecordBtn.style.display = 'none';
         }
-
-        // Modal functions
-        function showModal(modalId) {
-            document.getElementById(modalId).classList.add('active');
+        
+        // Reset ambulance tracking if not in emergency section
+        if (id !== 'emergency') {
+          document.getElementById('ambulance-tracking').classList.remove('active');
+          if (ambulanceInterval) {
+            clearInterval(ambulanceInterval);
+            ambulanceInterval = null;
+          }
         }
-
-        function hideModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
+        
+        // Hide chat input if not in medication section
+        if (id !== 'medication') {
+          document.getElementById('pharmacy-chat-input').style.display = 'none';
+          chatActive = false;
         }
-
-        // Toggle medication status
-        document.querySelectorAll('.medication-status').forEach(item => {
-            item.addEventListener('click', function() {
-                this.classList.toggle('taken');
-            });
-        });
-
-        // Emergency button hold functionality
-        const emergencyBtn = document.querySelector('.hold-to-call');
-        let holdTimer;
-
-        emergencyBtn.addEventListener('mousedown', function() {
-            holdTimer = setTimeout(() => {
-                alert('Emergency services have been notified with your location and medical information!');
-            }, 3000);
-        });
-
-        emergencyBtn.addEventListener('mouseup', function() {
-            clearTimeout(holdTimer);
-        });
-
-        emergencyBtn.addEventListener('mouseleave', function() {
-            clearTimeout(holdTimer);
-        });
-    </script>
+      };
+      
+      // Records tab switching
+      window.switchRecordsTab = (tab) => {
+        document.querySelectorAll('.records-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.records-tab[onclick="switchRecordsTab('${tab}')"]`).classList.add('active');
+        
+        document.querySelectorAll('.records-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(`${tab}-records`).classList.add('active');
+      };
+      
+      // Medication tab switching
+      window.switchMedicationTab = (tab) => {
+        document.querySelectorAll('.medication-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.medication-tab[onclick="switchMedicationTab('${tab}')"]`).classList.add('active');
+        
+        document.querySelectorAll('.medication-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(`${tab}-medications`).classList.add('active');
+      };
+      
+      // Nutrition tab switching
+      window.switchNutritionTab = (tab) => {
+        document.querySelectorAll('.nutrition-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.nutrition-tab[onclick="switchNutritionTab('${tab}')"]`).classList.add('active');
+        
+        document.querySelectorAll('.nutrition-content').forEach(c => c.classList.remove('active'));
+        document.getElementById(`${tab}-nutrition`).classList.add('active');
+      };
+      
+      // Appointment modal functions
+      window.openAppointmentModal = () => {
+        document.getElementById('appointment-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      
+      window.closeAppointmentModal = () => {
+        document.getElementById('appointment-modal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      
+      window.chooseSlot = (el) => {
+        if (el.classList.contains('unavailable')) return;
+        
+        document.querySelectorAll('.time-slot.selected').forEach(s => s.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedTime = el.textContent;
+        
+        const btn = document.getElementById('book-btn');
+        if (btn) { 
+          btn.disabled = false; 
+          btn.classList.add('enabled'); 
+        }
+      };
+      
+      window.confirmBooking = () => {
+        if (!selectedTime) return;
+        
+        // Update the schedule in the payment page
+        document.querySelector('.schedule-item .time').textContent = selectedTime;
+        document.querySelector('.schedule-item .date').textContent = selectedDate;
+        
+        // Close modal and show payment page
+        closeAppointmentModal();
+        showSection('review-pay');
+      };
+      
+      // Payment confirmation functions
+      window.openPaymentConfirm = () => {
+        document.getElementById('payment-overlay').classList.add('active');
+        document.getElementById('payment-confirm').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      
+      window.closePaymentConfirm = () => {
+        document.getElementById('payment-overlay').classList.remove('active');
+        document.getElementById('payment-confirm').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      
+      window.processPayment = () => {
+        // Handle the actual payment processing here
+        alert('Payment processed successfully!');
+        closePaymentConfirm();
+        // Optionally redirect to confirmation page or dashboard
+        showSection('dashboard');
+      };
+      
+      // Emergency functions
+      window.triggerSOS = () => {
+        const sosButton = document.getElementById('sos-button');
+        sosButton.classList.add('pulse');
+        sosButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        
+        // Show emergency modal
+        document.getElementById('emergency-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // Start countdown
+        countdown = 5;
+        document.getElementById('countdown').textContent = countdown;
+        countdownInterval = setInterval(() => {
+          countdown--;
+          document.getElementById('countdown').textContent = countdown;
+          if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            sendEmergencyAlert();
+          }
+        }, 1000);
+      };
+      
+      function sendEmergencyAlert() {
+        // In a real app, this would send your location to emergency services
+        alert('Emergency alert sent with your location! Help is on the way.');
+        closeEmergencyModal();
+        showSection('emergency');
+        triggerAmbulance();
+        
+        // Reset SOS button
+        const sosButton = document.getElementById('sos-button');
+        sosButton.classList.remove('pulse');
+        sosButton.innerHTML = '<i class="fas fa-bolt"></i>';
+      }
+      
+      window.closeEmergencyModal = () => {
+        document.getElementById('emergency-modal').classList.remove('active');
+        document.body.style.overflow = '';
+        clearInterval(countdownInterval);
+        
+        // Reset SOS button
+        const sosButton = document.getElementById('sos-button');
+        sosButton.classList.remove('pulse');
+        sosButton.innerHTML = '<i class="fas fa-bolt"></i>';
+      };
+      
+      window.triggerAmbulance = () => {
+        document.getElementById('ambulance-tracking').classList.add('active');
+        
+        // Simulate ambulance progress
+        progress = 0;
+        document.getElementById('progress-fill').style.width = '0%';
+        
+        if (ambulanceInterval) clearInterval(ambulanceInterval);
+        
+        ambulanceInterval = setInterval(() => {
+          progress += 1;
+          document.getElementById('progress-fill').style.width = `${progress}%`;
+          
+          if (progress >= 100) {
+            clearInterval(ambulanceInterval);
+            alert('Ambulance has arrived at your location!');
+            document.getElementById('ambulance-tracking').classList.remove('active');
+          }
+        }, 300);
+      };
+      
+      window.cancelAmbulance = () => {
+        if (ambulanceInterval) {
+          clearInterval(ambulanceInterval);
+          ambulanceInterval = null;
+        }
+        document.getElementById('ambulance-tracking').classList.remove('active');
+        alert('Ambulance dispatch has been canceled.');
+      };
+      
+      window.detectCrash = () => {
+        if (confirm('Simulate car crash detection? This will alert emergency services with your location.')) {
+          triggerSOS();
+          
+          // In a real app, this would be automatic from sensors
+          alert('Crash detected! Emergency services notified.');
+        }
+      };
+      
+      // First aid functions
+      const firstAidData = {
+        cpr: {
+          title: "CPR Instructions",
+          steps: [
+            "Check for responsiveness - tap shoulder and shout",
+            "Call emergency services if unresponsive",
+            "Place heel of hand on center of chest",
+            "Push hard and fast (100-120 compressions per minute)",
+            "Give 2 rescue breaths after every 30 compressions",
+            "Continue until help arrives or person revives"
+          ]
+        },
+        choking: {
+          title: "Choking Response",
+          steps: [
+            "Ask 'Are you choking?' - if they can cough, encourage it",
+            "Stand behind person, wrap arms around their waist",
+            "Make a fist with one hand, thumb side in",
+            "Grasp fist with other hand, press into abdomen with quick upward thrusts",
+            "Continue until object is expelled or person becomes unconscious",
+            "If unconscious, begin CPR"
+          ]
+        },
+        allergy: {
+          title: "Severe Allergic Reaction",
+          steps: [
+            "Check for allergy medication (EpiPen)",
+            "Help administer medication if available",
+            "Call emergency services immediately",
+            "Have person lie down with legs elevated",
+            "Monitor breathing - be prepared to perform CPR",
+            "Do not give anything by mouth if having trouble breathing",
+            "Keep person calm until help arrives"
+          ]
+        }
+      };
+      
+      window.showFirstAid = (type) => {
+        const data = firstAidData[type];
+        if (!data) return;
+        
+        document.getElementById('first-aid-title').textContent = data.title;
+        
+        const content = document.getElementById('first-aid-content');
+        content.innerHTML = `
+          <div style="text-align:center; margin-bottom:20px;">
+            <i class="fas fa-first-aid" style="font-size:2.5rem; color:var(--emergency);"></i>
+          </div>
+          ${data.steps.map((step, i) => `
+            <div class="first-aid-step">
+              <div class="step-number">${i+1}</div>
+              <div class="step-text">${step}</div>
+            </div>
+          `).join('')}
+          <button class="emergency-modal-btn" style="margin-top:20px;" onclick="closeFirstAidModal()">
+            <i class="fas fa-check"></i> Understood
+          </button>
+        `;
+        
+        document.getElementById('first-aid-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      
+      window.closeFirstAidModal = () => {
+        document.getElementById('first-aid-modal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      
+      // Record management functions
+      window.openAddRecordModal = () => {
+        document.getElementById('add-record-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      
+      window.closeAddRecordModal = () => {
+        document.getElementById('add-record-modal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      
+      window.openAddMedicationModal = () => {
+        document.getElementById('add-medication-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      
+      window.closeAddMedicationModal = () => {
+        document.getElementById('add-medication-modal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      
+      window.openAddMealModal = () => {
+        document.getElementById('add-meal-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      
+      window.closeAddMealModal = () => {
+        document.getElementById('add-meal-modal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      
+      window.openEditHealthModal = () => {
+        document.getElementById('edit-health-modal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      };
+      
+      window.closeEditHealthModal = () => {
+        document.getElementById('edit-health-modal').classList.remove('active');
+        document.body.style.overflow = '';
+      };
+      
+      window.saveHealthSummary = () => {
+        // In a real app, this would save to a database
+        alert('Health summary updated successfully!');
+        closeEditHealthModal();
+      };
+      
+      window.saveMedication = () => {
+        alert('Medication added successfully!');
+        closeAddMedicationModal();
+      };
+      
+      window.saveMeal = () => {
+        alert('Meal logged successfully!');
+        closeAddMealModal();
+      };
+      
+      window.addMealItem = () => {
+        const mealItems = document.getElementById('meal-items');
+        const newItem = document.createElement('div');
+        newItem.className = 'record-form-group';
+        newItem.innerHTML = `
+          <div style="display: flex; gap: 8px;">
+            <input type="text" class="record-form-input" placeholder="Food name" style="flex: 2;">
+            <input type="number" class="record-form-input" placeholder="Calories" style="flex: 1;">
+          </div>
+        `;
+        mealItems.appendChild(newItem);
+      };
+      
+      window.startPharmacyChat = () => {
+        chatActive = true;
+        const chatMessages = document.getElementById('pharmacy-chat-messages');
+        chatMessages.innerHTML = `
+          <div class="chat-message bot">
+            <div>Hello! I'm your pharmacy assistant. How can I help you today?</div>
+            <div style="font-size:0.8rem; color:#999; margin-top:4px;">Today, ${new Date().toLocaleTimeString()}</div>
+          </div>
+        `;
+        document.getElementById('pharmacy-chat-input').style.display = 'flex';
+      };
+      
+      window.sendPharmacyMessage = () => {
+        if (!chatActive) return;
+        
+        const input = document.querySelector('#pharmacy-chat-input input');
+        const message = input.value.trim();
+        if (!message) return;
+        
+        const chatMessages = document.getElementById('pharmacy-chat-messages');
+        
+        // Add user message
+        chatMessages.innerHTML += `
+          <div class="chat-message user">
+            <div>${message}</div>
+            <div style="font-size:0.8rem; color:#ddd; margin-top:4px;">Now</div>
+          </div>
+        `;
+        
+        input.value = '';
+        
+        // Simulate bot response after a delay
+        setTimeout(() => {
+          let response = "I'm sorry, I didn't understand that. Could you please rephrase?";
+          
+          if (message.toLowerCase().includes('stock') || message.toLowerCase().includes('available')) {
+            response = "I can check medication availability for you. Which medication are you asking about?";
+          } else if (message.toLowerCase().includes('lisinopril')) {
+            response = "Lisinopril 10mg is currently in stock at your local pharmacy. There are 15 boxes available. Would you like me to prepare a refill for you?";
+          } else if (message.toLowerCase().includes('atorvastatin')) {
+            response = "Atorvastatin 20mg is running low with only 8 boxes left. I can check other nearby pharmacies if you'd like?";
+          } else if (message.toLowerCase().includes('price')) {
+            response = "The current prices are: Lisinopril 10mg - $12.99, Atorvastatin 20mg - $15.49. Would you like to know about any other medications?";
+          } else if (message.toLowerCase().includes('refill') || message.toLowerCase().includes('prescription')) {
+            response = "I can process a refill for you. Please confirm which medication you'd like to refill and I'll check with your insurance.";
+          }
+          
+          chatMessages.innerHTML += `
+            <div class="chat-message bot">
+              <div>${response}</div>
+              <div style="font-size:0.8rem; color:#999; margin-top:4px;">Now</div>
+            </div>
+          `;
+          
+          // Scroll to bottom
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+        
+        // Scroll to bottom
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      };
+      
+      window.calculateBMI = () => {
+        document.getElementById('bmi-result').style.display = 'block';
+      };
+      
+      // File upload preview
+      document.getElementById('file-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(event) {
+            const preview = document.getElementById('image-preview');
+            preview.innerHTML = `
+              <img src="${event.target.result}" alt="Preview">
+              <div class="image-remove-btn" onclick="removeUploadedImage()"><i class="fas fa-times"></i></div>
+            `;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      
+      window.removeUploadedImage = () => {
+        document.getElementById('image-preview').innerHTML = `
+          <div class="image-preview-placeholder">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <div>No file selected</div>
+          </div>
+        `;
+        document.getElementById('file-input').value = '';
+      };
+      
+      // Close modal when clicking overlay
+      document.getElementById('payment-overlay').addEventListener('click', closePaymentConfirm);
+      
+      // Month navigation (placeholder functions)
+      window.prevMonth = () => {};
+      window.nextMonth = () => {};
+      
+      // Initialize medication tab
+      switchMedicationTab('current');
+      
+      // Initialize nutrition tab
+      switchNutritionTab('meals');
+    });
+  </script>
 </body>
 </html>
